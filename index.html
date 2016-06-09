@@ -125,13 +125,13 @@
                 <div class="tips-box hide">
                     <div class="tips-arrow"></div>
                     <ul class="tips-inner">
-                        <li>Menu</li>
-                        <li>Tags</li>
+                        <li>菜单</li>
+                        <li>标签</li>
                         
-                        <li>Friends</li>
+                        <li>友情链接</li>
                         
                         
-                        <li>About Me</li>
+                        <li>关于我</li>
                         
                     </ul>
                 </div>
@@ -174,7 +174,7 @@
                 
                 <section class="switch-part switch-part2">
                     <div class="widget tagcloud" id="js-tagcloud">
-                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人生活随笔/">个人生活随笔</a></li></ul>
+                        <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/java/">java</a></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/个人生活随笔/">个人生活随笔</a></li></ul>
                     </div>
                 </section>
                 
@@ -257,9 +257,74 @@
             </nav>
         </header>                
     </div>
-    <link class="menu-list" tags="Tags" friends="Friends" about="About Me"/>
+    <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
       <div class="body-wrap">
+  
+    <article id="post-jvm-augments-summary" class="article article-type-post" itemscope itemprop="blogPost">
+  
+    <div class="article-meta">
+      <a href="/2016/06/09/jvm-augments-summary/" class="article-date">
+      <time datetime="2016-06-09T15:15:03.000Z" itemprop="datePublished">2016-06-09</time>
+</a>
+    </div>
+  
+  <div class="article-inner">
+    
+      <input type="hidden" class="isFancy" />
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2016/06/09/jvm-augments-summary/">JVM的一些理解总结</a>
+    </h1>
+  
+
+      </header>
+      
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+          
+        <p>jvm&#x7684;<strong>&#x5806;&#x5185;&#x5B58;&#x6A21;&#x578B;</strong>&#xFF0C;</p>
+<p> jvm &#x5806; = &#x5E74;&#x8F7B;&#x4EE3; + &#x6301;&#x4E45;&#x4EE3; + &#x5E74;&#x8001;&#x4EE3;</p>
+<p>&#x5E74;&#x8F7B;&#x4EE3;&#x7684;&#x7EC4;&#x6210;(young generation) : &#x4E00;&#x4E2A;Eden&#x533A;,&#x4E24;&#x4E2A;Survivor&#x533A;(from &#x548C; to &#x533A;&#xFF09;&#x3002;</p>
+<p>&#x901A;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E00;&#x4E2A;&#x65B0;&#x4EA7;&#x751F;&#x7684;&#x5BF9;&#x8C61;&#x4F1A;&#x88AB;&#x5206;&#x914D;&#x5728;Eden&#x533A;&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x5F53;Eden&#x533A;&#x53D1;&#x751F;&#x4E00;&#x6B21;minor gc(&#x53D1;&#x751F;&#x5728;&#x65B0;&#x751F;&#x4EE3;&#x7684;gc&#xFF0C;&#x6211;&#x4E2A;&#x4EBA;&#x7406;&#x89E3;&#x5E94;&#x8BE5;&#x662F;&#x5BF9;&#x4E3B;&#x8981;&#x662F;&#x5BF9;Eden&#x7684;gc&#xFF0C;&#x5F53;&#x7136;&#x5982;&#x679C;to &#x533A;&#x6EE1;&#x4E86;&#x4EE5;&#x540E;&#x4E5F;&#x4F1A;&#x89E6;&#x53D1;&#xFF09;&#xFF0C;&#x5BF9;&#x8C61;&#x5C31;&#x4F1A;&#x4ECE;Eden&#x533A;&#x79FB;&#x52A8;&#x5230;from&#x533A;,&#x521A;&#x5F00;&#x59CB;&#x7684;&#x65F6;&#x5019;to&#x533A;&#x662F;&#x7A7A;&#x7684;&#xFF0C; &#x4E4B;&#x540E;&#x7684;gc&#xFF0C;Eden&#x533A;&#x5B58;&#x6D3B;&#x4E0B;&#x6765;&#x7684;&#x5BF9;&#x8C61;&#x4F1A;&#x88AB;&#x79FB;&#x52A8;&#x5230;&#x201D;to&#x201C;&#x533A;&#xFF0C;&#x7136;&#x540E;&#x201D;From&#x533A;&#x201D;&#x6839;&#x636E;&#x5E74;&#x9F84;&#x6765;&#x51B3;&#x5B9A;&#x53BB;&#x5411;&#xFF0C;&#x5230;&#x8FBE;&#x7684;&#x5E74;&#x9F84;&#x7684;&#x53BB;&#x5F80;&#x8001;&#x5E74;&#x4EE3;&#xFF08;&#x957F;&#x8FBE;&#x6210;&#x4EBA;&#xFF09;&#xFF0C;&#x7136;&#x540E;&#x5176;&#x4F59;&#x7684;&#x5168;&#x90E8;&#x8D76;&#x5F80;&#x201D;to&#x201D;&#x533A;. &#x8FD9;&#x6B21;gc&#x540E;Eden&#x533A;&#x548C;from&#x533A;&#x5C06;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#xFF0C;&#x4E4B;&#x540E; &#x201C;to&#x201D;&#x533A; &#x5C06;&#x4F1A;&#x548C;&#x201C;from&#x201D;&#x4EA4;&#x6362;&#xFF0C;&#x8FD9;&#x6837;&#x4E0B;&#x6B21;gc&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x201D;to&#x201D;&#x533A;&#x5C31;&#x7A7A;&#x4E86;&#x3002;&#x8FD9;&#x79CD;&#x57FA;&#x4E8E;&#x590D;&#x5236;&#x6536;&#x96C6;&#x7684;&#x7B97;&#x6CD5;&#x4E0D;&#x4F1A;&#x4EA7;&#x751F;&#x5185;&#x5B58;&#x788E;&#x7247;&#x3002;</p>
+
+      
+    </div>
+    
+    <div class="article-info article-info-index">
+      
+      
+    <div class="article-category tagcloud">
+    <a class="article-category-link" href="/categories/编程艺术/">编程艺术</a>
+    </div>
+
+
+      
+    <div class="article-tag tagcloud">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+    </div>
+
+      
+      <div class="clearfix"></div>
+    </div>
+    
+  </div>
+  
+</article>
+
+
+
+
+
+
+
+
+
   
     <article id="post-hexo-01" class="article article-type-post" itemscope itemprop="blogPost">
   
@@ -333,14 +398,14 @@
                 2016 zhong-wei
             </div>
             <div class="footer-right">
-                <a href="http://hexo.io/" target="_blank" title="A fast, simple &amp; powerful blog framework">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="Another simple and elegant theme for Hexo  v3.0">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
+                <a href="http://hexo.io/" target="_blank" title="快速、简洁且高效的博客框架">Hexo</a>  Theme <a href="https://github.com/MOxFIVE/hexo-theme-yelee" target="_blank" title="简而不减 Hexo 双栏博客主题  v3.0">Yelee</a> by MOxFIVE <i class="fa fa-heart animated infinite pulse"></i>
             </div>
         </div>
         
             <div class="visit">
                 
                     <span id="busuanzi_container_site_pv" style='display:none'>
-                        <span id="site-visit" >Site Visitors: 
+                        <span id="site-visit" >本站到访数: 
                             <span id="busuanzi_value_site_uv"></span>
                         </span>
                     </span>
@@ -350,7 +415,7 @@
                 
                 
                     <span id="busuanzi_container_page_pv" style='display:none'>
-                        <span id="page-visit">Page Hits: 
+                        <span id="page-visit">本页阅读量: 
                             <span id="busuanzi_value_page_pv"></span>
                         </span>
                     </span>
@@ -383,9 +448,9 @@
 
 
 <div class="scroll" id="scroll">
-    <a href="#" title="Back to Top"><i class="fa fa-arrow-up"></i></a>
-    <a href="#comments" title="Comments"><i class="fa fa-comments-o"></i></a>
-    <a href="#footer" title="Go to Bottom"><i class="fa fa-arrow-down"></i></a>
+    <a href="#" title="返回顶部"><i class="fa fa-arrow-up"></i></a>
+    <a href="#comments" title="查看评论"><i class="fa fa-comments-o"></i></a>
+    <a href="#footer" title="转到底部"><i class="fa fa-arrow-down"></i></a>
 </div>
 
 <script async src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js">
