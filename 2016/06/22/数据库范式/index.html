@@ -3,24 +3,22 @@
 <head>
   <meta charset="utf-8">
   
-  <title>JVM的一些理解总结 | Leisure Moment</title>
+  <title>数据库范式 | Leisure Moment</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="jvm&amp;#x7684;&amp;#x5806;&amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#xFF0C;
- jvm &amp;#x5806; = &amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3; + &amp;#x6301;&amp;#x4E45;&amp;#x4EE3; + &amp;#x5E74;&amp;#x8001;&amp;#x4EE3;
-&amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3;&amp;#x7684;&amp;#x7EC4;&amp;#x62">
+  <meta name="description" content="&amp;#x521A;&amp;#x770B;&amp;#x4E86;&amp;#x4E00;&amp;#x904D;&amp;#x535A;&amp;#x5BA2;&amp;#x56ED;&amp;#x539F;&amp;#x6587;&amp;#x8BB2;&amp;#x4E09;&amp;#x5927;&amp;#x8303;&amp;#x5F0F;(&amp;#x5173;&amp;#x7CFB;&amp;#x578B;&amp;#x6570;&amp;#x636E;&amp;#x5E93;)&amp;#xFF0C;&amp;#x662F;&amp;#x6211;&amp;#x89C">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM的一些理解总结">
-<meta property="og:url" content="http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/index.html">
+<meta property="og:title" content="数据库范式">
+<meta property="og:url" content="http://truejasonfans.github.io/2016/06/22/数据库范式/index.html">
 <meta property="og:site_name" content="Leisure Moment">
-<meta property="og:description" content="jvm&amp;#x7684;&amp;#x5806;&amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#xFF0C;
- jvm &amp;#x5806; = &amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3; + &amp;#x6301;&amp;#x4E45;&amp;#x4EE3; + &amp;#x5E74;&amp;#x8001;&amp;#x4EE3;
-&amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3;&amp;#x7684;&amp;#x7EC4;&amp;#x62">
-<meta property="og:updated_time" content="2016-06-09T15:20:51.313Z">
+<meta property="og:description" content="&amp;#x521A;&amp;#x770B;&amp;#x4E86;&amp;#x4E00;&amp;#x904D;&amp;#x535A;&amp;#x5BA2;&amp;#x56ED;&amp;#x539F;&amp;#x6587;&amp;#x8BB2;&amp;#x4E09;&amp;#x5927;&amp;#x8303;&amp;#x5F0F;(&amp;#x5173;&amp;#x7CFB;&amp;#x578B;&amp;#x6570;&amp;#x636E;&amp;#x5E93;)&amp;#xFF0C;&amp;#x662F;&amp;#x6211;&amp;#x89C">
+<meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042969-702810485.jpg">
+<meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141043141-1497547913.jpg">
+<meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042906-352048073.jpg">
+<meta property="og:updated_time" content="2016-06-22T15:51:26.250Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM的一些理解总结">
-<meta name="twitter:description" content="jvm&amp;#x7684;&amp;#x5806;&amp;#x5185;&amp;#x5B58;&amp;#x6A21;&amp;#x578B;&amp;#xFF0C;
- jvm &amp;#x5806; = &amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3; + &amp;#x6301;&amp;#x4E45;&amp;#x4EE3; + &amp;#x5E74;&amp;#x8001;&amp;#x4EE3;
-&amp;#x5E74;&amp;#x8F7B;&amp;#x4EE3;&amp;#x7684;&amp;#x7EC4;&amp;#x62">
+<meta name="twitter:title" content="数据库范式">
+<meta name="twitter:description" content="&amp;#x521A;&amp;#x770B;&amp;#x4E86;&amp;#x4E00;&amp;#x904D;&amp;#x535A;&amp;#x5BA2;&amp;#x56ED;&amp;#x539F;&amp;#x6587;&amp;#x8BB2;&amp;#x4E09;&amp;#x5927;&amp;#x8303;&amp;#x5F0F;(&amp;#x5173;&amp;#x7CFB;&amp;#x578B;&amp;#x6570;&amp;#x636E;&amp;#x5E93;)&amp;#xFF0C;&amp;#x662F;&amp;#x6211;&amp;#x89C">
+<meta name="twitter:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042969-702810485.jpg">
   
     <link rel="alternative" href="/atom.xml" title="Leisure Moment" type="application/atom+xml">
   
@@ -261,11 +259,11 @@
     </div>
     <link class="menu-list" tags="标签" friends="友情链接" about="关于我"/>
 </nav>
-      <div class="body-wrap"><article id="post-jvm-augments-summary" class="article article-type-post" itemscope itemprop="blogPost">
+      <div class="body-wrap"><article id="post-数据库范式" class="article article-type-post" itemscope itemprop="blogPost">
   
     <div class="article-meta">
-      <a href="/2016/06/09/jvm-augments-summary/" class="article-date">
-      <time datetime="2016-06-09T15:15:03.000Z" itemprop="datePublished">2016-06-09</time>
+      <a href="/2016/06/22/数据库范式/" class="article-date">
+      <time datetime="2016-06-22T14:11:25.000Z" itemprop="datePublished">2016-06-22</time>
 </a>
     </div>
   
@@ -278,7 +276,7 @@
         
   
     <h1 class="article-title" itemprop="name">
-      JVM的一些理解总结
+      数据库范式
     </h1>
   
 
@@ -286,14 +284,10 @@
       
       <div class="article-info article-info-post">
         
-    <div class="article-category tagcloud">
-    <a class="article-category-link" href="/categories/编程艺术/">编程艺术</a>
-    </div>
-
 
         
     <div class="article-tag tagcloud">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/java/">java</a></li></ul>
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/数据库原理/">数据库原理</a></li></ul>
     </div>
 
         <div class="clearfix"></div>
@@ -303,10 +297,18 @@
     <div class="article-entry" itemprop="articleBody">
       
           
-        <p>jvm&#x7684;<strong>&#x5806;&#x5185;&#x5B58;&#x6A21;&#x578B;</strong>&#xFF0C;</p>
-<p> jvm &#x5806; = &#x5E74;&#x8F7B;&#x4EE3; + &#x6301;&#x4E45;&#x4EE3; + &#x5E74;&#x8001;&#x4EE3;</p>
-<p>&#x5E74;&#x8F7B;&#x4EE3;&#x7684;&#x7EC4;&#x6210;(young generation) : &#x4E00;&#x4E2A;Eden&#x533A;,&#x4E24;&#x4E2A;Survivor&#x533A;(from &#x548C; to &#x533A;&#xFF09;&#x3002;</p>
-<p>&#x901A;&#x5E38;&#x60C5;&#x51B5;&#x4E0B;&#xFF0C;&#x4E00;&#x4E2A;&#x65B0;&#x4EA7;&#x751F;&#x7684;&#x5BF9;&#x8C61;&#x4F1A;&#x88AB;&#x5206;&#x914D;&#x5728;Eden&#x533A;&#xFF0C;&#x5728;&#x8FD9;&#x91CC;&#x5F53;Eden&#x533A;&#x53D1;&#x751F;&#x4E00;&#x6B21;minor gc(&#x53D1;&#x751F;&#x5728;&#x65B0;&#x751F;&#x4EE3;&#x7684;gc&#xFF0C;&#x6211;&#x4E2A;&#x4EBA;&#x7406;&#x89E3;&#x5E94;&#x8BE5;&#x662F;&#x5BF9;&#x4E3B;&#x8981;&#x662F;&#x5BF9;Eden&#x7684;gc&#xFF0C;&#x5F53;&#x7136;&#x5982;&#x679C;to &#x533A;&#x6EE1;&#x4E86;&#x4EE5;&#x540E;&#x4E5F;&#x4F1A;&#x89E6;&#x53D1;&#xFF09;&#xFF0C;&#x5BF9;&#x8C61;&#x5C31;&#x4F1A;&#x4ECE;Eden&#x533A;&#x79FB;&#x52A8;&#x5230;from&#x533A;,&#x521A;&#x5F00;&#x59CB;&#x7684;&#x65F6;&#x5019;to&#x533A;&#x662F;&#x7A7A;&#x7684;&#xFF0C; &#x4E4B;&#x540E;&#x7684;gc&#xFF0C;Eden&#x533A;&#x5B58;&#x6D3B;&#x4E0B;&#x6765;&#x7684;&#x5BF9;&#x8C61;&#x4F1A;&#x88AB;&#x79FB;&#x52A8;&#x5230;&#x201D;to&#x201C;&#x533A;&#xFF0C;&#x7136;&#x540E;&#x201D;From&#x533A;&#x201D;&#x6839;&#x636E;&#x5E74;&#x9F84;&#x6765;&#x51B3;&#x5B9A;&#x53BB;&#x5411;&#xFF0C;&#x5230;&#x8FBE;&#x7684;&#x5E74;&#x9F84;&#x7684;&#x53BB;&#x5F80;&#x8001;&#x5E74;&#x4EE3;&#xFF08;&#x957F;&#x8FBE;&#x6210;&#x4EBA;&#xFF09;&#xFF0C;&#x7136;&#x540E;&#x5176;&#x4F59;&#x7684;&#x5168;&#x90E8;&#x8D76;&#x5F80;&#x201D;to&#x201D;&#x533A;. &#x8FD9;&#x6B21;gc&#x540E;Eden&#x533A;&#x548C;from&#x533A;&#x5C06;&#x4F1A;&#x88AB;&#x6E05;&#x7A7A;&#xFF0C;&#x4E4B;&#x540E; &#x201C;to&#x201D;&#x533A; &#x5C06;&#x4F1A;&#x548C;&#x201C;from&#x201D;&#x4EA4;&#x6362;&#xFF0C;&#x8FD9;&#x6837;&#x4E0B;&#x6B21;gc&#x7684;&#x65F6;&#x5019;&#xFF0C;&#x201D;to&#x201D;&#x533A;&#x5C31;&#x7A7A;&#x4E86;&#x3002;&#x8FD9;&#x79CD;&#x57FA;&#x4E8E;&#x590D;&#x5236;&#x6536;&#x96C6;&#x7684;&#x7B97;&#x6CD5;&#x4E0D;&#x4F1A;&#x4EA7;&#x751F;&#x5185;&#x5B58;&#x788E;&#x7247;&#x3002;</p>
+        <p>&#x521A;&#x770B;&#x4E86;&#x4E00;&#x904D;&#x535A;&#x5BA2;&#x56ED;&#x539F;&#x6587;&#x8BB2;&#x4E09;&#x5927;&#x8303;&#x5F0F;(&#x5173;&#x7CFB;&#x578B;&#x6570;&#x636E;&#x5E93;)&#xFF0C;&#x662F;&#x6211;&#x89C9;&#x770B;&#x5230;&#x76EE;&#x524D;&#x6700;&#x901A;&#x4FD7;&#x7684;&#x7248;&#x672C;<br>&#x53C2;&#x8003;&#x4E8E;<a href="http://news.cnblogs.com/n/547872/" target="_blank" rel="external">&#x4F59;&#x665F;&#xFF1A;&#x4ECE;&#x8303;&#x5F0F;&#x8C08;&#x8D77;</a>.</p>
+<h2 id="&#x7B2C;&#x4E00;&#x8303;&#x5F0F;&#xFF1A;&#x5C5E;&#x6027;&#x4E0D;&#x80FD;&#x62C6;&#x5206;"><a href="#&#x7B2C;&#x4E00;&#x8303;&#x5F0F;&#xFF1A;&#x5C5E;&#x6027;&#x4E0D;&#x80FD;&#x62C6;&#x5206;" class="headerlink" title="&#x7B2C;&#x4E00;&#x8303;&#x5F0F;&#xFF1A;&#x5C5E;&#x6027;&#x4E0D;&#x80FD;&#x62C6;&#x5206;"></a>&#x7B2C;&#x4E00;&#x8303;&#x5F0F;&#xFF1A;&#x5C5E;&#x6027;&#x4E0D;&#x80FD;&#x62C6;&#x5206;</h2><p>&#x6362;&#x53E5;&#x8BDD;&#x8BF4;&#xFF0C;&#x8868;&#x4E2D;&#x95F4;&#x7684;&#x4EFB;&#x4F55;&#x5217;&#x90FD;&#x5E94;&#x5F53;&#x662F;&#x627F;&#x8F7D;&#x4FE1;&#x606F;&#x7684;&#x6700;&#x5C0F;&#x5355;&#x4F4D;&#xFF0C;&#x4E0D;&#x5BB9;&#x8BB8;&#x6709;&#x66F4;&#x5C0F;&#x7684;&#x5355;&#x4F4D;&#x3002;&#x4E00;&#x4E2A;&#x4EBA;&#x6709;&#x8EAB;&#x9AD8;&#x3001;&#x4F53;&#x91CD;&#x3001;&#x6027;&#x522B;&#x7B49;&#x7B49;&#xFF0C;&#x90A3;&#x4E48;&#x8EAB;&#x9AD8;&#x3001;&#x4F53;&#x91CD;&#x3001;&#x6027;&#x522B;&#x90FD;&#x5E94;&#x8BE5;&#x5BF9;&#x5E94;&#x4E13;&#x95E8;&#x7684;&#x5217;&#xFF0C;&#x800C;&#x4E0D;&#x80FD;&#x53D6;&#x4E2A;&#x540D;&#x4E3A;&#x201C;&#x57FA;&#x672C;&#x4FE1;&#x606F;&#x201D;&#x7684;&#x5217;&#xFF0C;&#x628A;&#x8FD9;&#x4E9B;&#x4FE1;&#x606F;&#x7EDF;&#x7EDF;&#x585E;&#x8FDB;&#x53BB;&#x3002;&#x5373;&#x6570;&#x636E;&#x5E93;&#x8868;&#x7684;&#x6BCF;&#x4E00;&#x5217;&#x90FD;&#x662F;&#x4E0D;&#x53EF;&#x5206;&#x5272;&#x7684;<strong>&#x539F;&#x5B50;&#x6570;&#x636E;&#x9879;</strong>&#x3002;&#x8FD9;&#x4E2A;&#x5E94;&#x8BE5;&#x6BD4;&#x8F83;&#x597D;&#x7406;&#x89E3;&#xFF0C;&#x65B9;&#x4FBF;&#x6570;&#x636E;&#x7684;&#x7D22;&#x5F15;&#x4E0E;&#x53BB;&#x91CD;&#x3002;</p>
+<h2 id="&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF1A;&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x6700;&#x5C0F;"><a href="#&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF1A;&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x6700;&#x5C0F;" class="headerlink" title="&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF1A;&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x6700;&#x5C0F;"></a>&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF1A;&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x6700;&#x5C0F;</h2><p>&#x4E3B;&#x952E;&#x662F;&#x8FD9;&#x6837;&#x7684;&#x5C5E;&#x6027;&#xFF1A;&#x5BF9;&#x67D0;&#x4E2A;&#x5173;&#x7CFB;&#x4E2D;&#x6240;&#x6709;n&#x5143;&#x7EC4;&#x6765;&#x8BF4;&#xFF0C;&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x662F;&#x6CA1;&#x6709;&#x91CD;&#x590D;&#x7684;&#xFF0C;&#x6240;&#x4EE5;&#x4F9D;&#x9760;&#x5B83;&#x53EF;&#x4EE5;&#x552F;&#x4E00;&#x5B9A;&#x4F4D;&#x67D0;&#x4E2A;n&#x5143;&#x7EC4;&#x3002;&#x4E3B;&#x952E;&#x53EF;&#x4EE5;&#x662F;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x4E5F;&#x53EF;&#x4EE5;&#x662F;&#x591A;&#x4E2A;&#x5C5E;&#x6027;&#x3002;&#x5982;&#x679C;&#x7528;&#x5217;&#x548C;&#x8868;&#x7684;&#x8BF4;&#x6CD5;&#xFF0C;&#x5C31;&#x662F;&#x201C;&#x552F;&#x4E00;&#x5B9A;&#x4F4D;&#x8868;&#x4E2D;&#x67D0;&#x884C;&#x6240;&#x8981;&#x7528;&#x5230;&#x7684;&#x5217;&#x201D;&#x3002;</p>
+<p>&#x3000;&#x3000;&#x5047;&#x8BBE;&#x6709;&#x4E00;&#x4E2A;&#x7535;&#x5546;&#x5356;&#x5BB6;&#x5BF9;&#x63A5;&#x5230;&#x7535;&#x5546;&#x5E73;&#x53F0;&#xFF0C;&#x7528;&#x8868;&#x6765;&#x5B58;&#x50A8;&#x8BA2;&#x5355;&#x4FE1;&#x606F;&#xFF0C;&#x5982;&#x679C;&#x6240;&#x6709;&#x8BA2;&#x5355;&#x90FD;&#x6765;&#x81EA;&#x540C;&#x4E00;&#x4E2A;&#x5E73;&#x53F0;&#xFF0C;&#x53EF;&#x4EE5;&#x7528;&#x201C;&#x5E73;&#x53F0;&#x8BA2;&#x5355;&#x53F7;&#x201D;&#x4F5C;&#x4E3A;&#x4E3B;&#x952E;&#xFF1B;&#x5982;&#x679C;&#x6765;&#x81EA;&#x4E0D;&#x540C;&#x5E73;&#x53F0;&#xFF0C;&#x5404;&#x5E73;&#x53F0;&#x7684;&#x8BA2;&#x5355;&#x53F7;&#x53EF;&#x80FD;&#x4F1A;&#x91CD;&#x590D;&#xFF0C;&#x6240;&#x4EE5;&#x53EF;&#x4EE5;&#x7528;&#x201C;&#x5E73;&#x53F0;+&#x8BA2;&#x5355;&#x53F7;&#x201D;&#x4F5C;&#x4E3A;&#x4E3B;&#x952E;&#x2026;&#x2026;&#x4EE5;&#x6B64;&#x7C7B;&#x63A8;&#x3002;</p>
+<p>&#x3000;&#x3000;&#x7B2C; 2 &#x8303;&#x5F0F;&#x7684;&#x8981;&#x6C42;&#x662F;&#xFF1A;&#x5728;&#x6EE1;&#x8DB3;&#x7B2C; 1 &#x8303;&#x5F0F;&#x7684;&#x57FA;&#x7840;&#x4E0A;&#xFF0C;&#x6240;&#x6709;&#x975E;&#x4E3B;&#x5C5E;&#x6027;&#xFF08;&#x4E3B;&#x952E;&#x4E4B;&#x5916;&#x7684;&#x5C5E;&#x6027;&#xFF09;&#x5FC5;&#x987B;<strong>&#x5B8C;&#x5168;&#x4F9D;&#x8D56;&#x4E3B;&#x952E;</strong>&#xFF0C;&#x800C;&#x4E0D;&#x80FD;&#x53EA;&#x4F9D;&#x8D56;&#x4E3B;&#x952E;&#x7684;<strong>&#x67D0;&#x4E2A;&#x5B50;&#x96C6;</strong>&#x3002;</p>
+<p><img src="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042969-702810485.jpg" alt="alt text"><br>&#x4E0A;&#x9762;&#x7684;&#x8868;&#x4E0D;&#x7B26;&#x5408;&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF0C;&#x4E3B;&#x952E;&#x662F;&#x201C;&#x5E73;&#x53F0;+&#x8BA2;&#x5355;&#x53F7;&#x201D;&#xFF0C;&#x8FD9;&#x6837;&#x624D;&#x80FD;&#x533A;&#x5206;&#x91D1;&#x989D;&#xFF0C;&#x4F46;&#x662F;&#x201C;&#x5BF9;&#x63A5;&#x4EBA;&#x90AE;&#x7BB1;&#x201D;&#x53EA;&#x4E0E;&#x201C;&#x5E73;&#x53F0;&#x201D;&#x6709;&#x5173;&#xFF0C;&#x800C;&#x201C;&#x5E73;&#x53F0;&#x201D;&#x662F;&#x201C;&#x5E73;&#x53F0;+&#x8BA2;&#x5355;&#x53F7;&#x201D;&#x7684;&#x5B50;&#x96C6;&#x3002;<br>&#x3000;&#x3000;&#x6211;&#x4EEC;&#x7ECF;&#x5E38;&#x770B;&#x5230;&#x6570;&#x636E;&#x5E93;&#x7684;&#x8868;&#x4F1A;&#x6709;&#x4E00;&#x4E2A;&#x6BEB;&#x65E0;&#x4E1A;&#x52A1;&#x610F;&#x4E49;&#x7684;&#x81EA;&#x589E;&#x5B57;&#x6BB5;&#x4F5C;&#x4E3A;&#x4E3B;&#x952E;&#xFF0C;&#x8FD9;&#x6837;&#x5C31;&#x4FDD;&#x8BC1;&#x4E86;&#x7B2C;&#x4E8C;&#x8303;&#x5F0F;&#xFF0C;&#x56E0;&#x4E3A;&#x4E3B;&#x952E;&#x53EA;&#x6709;&#x4E00;&#x4E2A;&#x5C5E;&#x6027;&#xFF0C;&#x4E0D;&#x5B58;&#x5728;&#x771F;&#x5B50;&#x96C6;&#x3002;&#x540C;&#x65F6;&#xFF0C;&#x5E94;&#x5F53;&#x628A;&#x975E;&#x4E3B;&#x5C5E;&#x6027;&#x548C;&#x539F;&#x6765;&#x5B83;&#x4F9D;&#x8D56;&#x7684;&#x201C;&#x4E3B;&#x952E;&#x7684;&#x5B50;&#x96C6;&#x201D;&#x5355;&#x72EC;&#x62FF;&#x51FA;&#x6765;&#x5EFA;&#x8868;&#xFF0C;&#x6BD4;&#x5982;&#x5EFA;&#x7ACB;&#x4E00;&#x5F20;&#x201C;&#x5E73;&#x53F0;+&#x5BF9;&#x63A5;&#x4EBA;&#x90AE;&#x7BB1;&#x201D;&#x7684;&#x8868;&#x683C;&#x3002;</p>
+<p>&#x8BE5;&#x8303;&#x5F0F;&#x662F;&#x89C4;&#x5B9A;&#x4EE5;&#x6700;&#x5C0F;&#x7684;&#x4E3B;&#x952E;&#x7D22;&#x5F15;&#x5230;&#x67D0;&#x884C;&#x6570;&#x636E;</p>
+<h2 id="&#x7B2C;&#x4E09;&#x8303;&#x5F0F;-&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x76F4;&#x63A5;&#x4F9D;&#x8D56;"><a href="#&#x7B2C;&#x4E09;&#x8303;&#x5F0F;-&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x76F4;&#x63A5;&#x4F9D;&#x8D56;" class="headerlink" title="&#x7B2C;&#x4E09;&#x8303;&#x5F0F;:&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x76F4;&#x63A5;&#x4F9D;&#x8D56;"></a>&#x7B2C;&#x4E09;&#x8303;&#x5F0F;:&#x4E3B;&#x952E;&#x5FC5;&#x987B;&#x76F4;&#x63A5;&#x4F9D;&#x8D56;</h2><p>&#x3000;&#x8981;&#x6EE1;&#x8DB3;&#x7B2C; 2 &#x8303;&#x5F0F;&#xFF0C;&#x9996;&#x5148;&#x5FC5;&#x987B;&#x6EE1;&#x8DB3;&#x7B2C; 1 &#x8303;&#x5F0F;&#x3002;&#x540C;&#x6837;&#x7684;&#x9053;&#x7406;&#xFF0C;&#x8981;&#x6EE1;&#x8DB3;&#x7B2C; 3 &#x8303;&#x5F0F;&#xFF0C;&#x9996;&#x5148;&#x4E5F;&#x5FC5;&#x987B;&#x6EE1;&#x8DB3;&#x7B2C; 2 &#x8303;&#x5F0F;&#xFF0C;&#x5E76;&#x7B26;&#x5408;&#x4EE5;&#x4E0B;&#x8981;&#x6C42;&#xFF1A;&#x6240;&#x6709;&#x975E;&#x4E3B;&#x5C5E;&#x6027;&#x5BF9;&#x4E3B;&#x952E;&#x7684;&#x4F9D;&#x8D56;&#x5E94;&#x5F53;&#x662F;&#x76F4;&#x63A5;&#x7684;&#xFF0C;&#x4E0D;&#x5BB9;&#x8BB8;&#x662F;&#x95F4;&#x63A5;&#x7684;&#x3002;&#x4E5F;&#x5C31;&#x662F;&#x8BF4;&#xFF0C;&#x6240;&#x6709;&#x975E;&#x4E3B;&#x5C5E;&#x6027;&#x4E0D;&#x5BB9;&#x8BB8;&#x4F9D;&#x8D56;<strong>&#x4E3B;&#x952E;&#x4E4B;&#x5916;&#x7684;&#x5C5E;&#x6027;</strong>&#x3002;</p>
+<p><img src="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141043141-1497547913.jpg" alt="alt text"></p>
+<p>&#x4E0A;&#x9762;&#x7684;&#x8868;&#x4E0D;&#x7B26;&#x5408;&#x7B2C;&#x4E09;&#x8303;&#x5F0F;&#x3002;&#x4E3B;&#x952E;&#x662F;&#x201C;&#x5E73;&#x53F0;+&#x51A0;&#x519B;&#x79CD;&#x7C7B;&#x201D;&#xFF0C;&#x4F46;&#x5C5E;&#x6027;&#x201C;&#x54C1;&#x724C;&#x8054;&#x7CFB;&#x4EBA;&#x90AE;&#x7BB1;&#x201D;&#x4F9D;&#x8D56;&#x4E8E;&#x4E3B;&#x952E;&#x4E4B;&#x5916;&#x7684;&#x5C5E;&#x6027;&#x201C;&#x54C1;&#x724C;&#x201D;&#xFF0C;&#x867D;&#x7136;&#x201C;&#x54C1;&#x724C;&#x201D;&#x4F9D;&#x8D56;&#x4E8E;&#x8868;&#x7684;&#x4E3B;&#x952E;&#xFF0C;&#x4F46;&#x201C;&#x54C1;&#x724C;&#x8054;&#x7CFB;&#x4EBA;&#x90AE;&#x7BB1;&#x201D;&#x5BF9;&#x4E3B;&#x952E;&#x4F9D;&#x8D56;&#x662F;&#x4F20;&#x9012;&#x7684;&#x3002;</p>
+<p>&#x3000;&#x3000;&#x8981;&#x8BA9;&#x8868;&#x7B26;&#x5408;&#x7B2C; 3 &#x8303;&#x5F0F;&#xFF0C;&#x53EF;&#x4EE5;&#x89E3;&#x9664;&#x4F20;&#x9012;&#x4F9D;&#x8D56;&#xFF0C;&#x628A;&#x5BF9;&#x5E94;&#x7684;&#x5C5E;&#x6027;&#x62C6;&#x5206;&#x51FA;&#x6765;&#x5355;&#x72EC;&#x521B;&#x5EFA;&#x8868;&#xFF0C;&#x6BD4;&#x5982;&#x628A;&#x201C;&#x54C1;&#x724C;&#x201D;&#x548C;&#x201C;&#x54C1;&#x724C;&#x8054;&#x7CFB;&#x4EBA;&#x90AE;&#x7BB1;&#x201D;&#x5355;&#x72EC;&#x521B;&#x5EFA;&#x8868;&#x3002;<br><img src="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042906-352048073.jpg" alt="alt text"></p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p>&#x4E09;&#x5927;&#x8303;&#x5F0F;&#x6838;&#x5FC3;&#x89C2;&#x70B9;&#x5C31;&#x662F;&#x53BB;&#x9664;<strong>&#x5197;&#x4F59;&#x6570;&#x636E;</strong></p>
 
       
     </div>
@@ -315,13 +317,13 @@
   
     
     <div class="copyright">
-        <p><span>本文标题:</span><a href="/2016/06/09/jvm-augments-summary/">JVM的一些理解总结</a></p>
+        <p><span>本文标题:</span><a href="/2016/06/22/数据库范式/">数据库范式</a></p>
         <p><span>文章作者:</span><a href="/" title="回到主页">zhong-wei</a></p>
-        <p><span>发布时间:</span>2016-06-09, 23:15:03</p>
-        <p><span>最后更新:</span>2016-06-09, 23:20:51</p>
+        <p><span>发布时间:</span>2016-06-22, 22:11:25</p>
+        <p><span>最后更新:</span>2016-06-22, 23:51:26</p>
         <p>
-            <span>原始链接:</span><a class="post-url" href="/2016/06/09/jvm-augments-summary/" title="JVM的一些理解总结">http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/</a>
-            <span class="copy-path" data-clipboard-text="原文: http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/　　作者: zhong-wei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
+            <span>原始链接:</span><a class="post-url" href="/2016/06/22/数据库范式/" title="数据库范式">http://truejasonfans.github.io/2016/06/22/数据库范式/</a>
+            <span class="copy-path" data-clipboard-text="原文: http://truejasonfans.github.io/2016/06/22/数据库范式/　　作者: zhong-wei" title="点击复制文章链接"><i class="fa fa-clipboard"></i></span>
             <script> var clipboard = new Clipboard('.copy-path'); </script>
         </p>
         <p>
@@ -333,16 +335,10 @@
 
     <nav id="article-nav">
         
-            <div id="article-nav-newer" class="article-nav-title">
-                <a href="/2016/06/22/数据库范式/">
-                    数据库范式
-                </a>
-            </div>
-        
         
             <div id="article-nav-older" class="article-nav-title">
-                <a href="/2016/05/26/hexo-01/">
-                    第一篇杂记吧
+                <a href="/2016/06/09/jvm-augments-summary/">
+                    JVM的一些理解总结
                 </a>
             </div>
         
@@ -353,7 +349,7 @@
 
     <div id="toc" class="toc-article">
     <strong class="toc-title">文章目录</strong>
-    
+    <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#第一范式：属性不能拆分"><span class="toc-number">1.</span> <span class="toc-text">第一范式：属性不能拆分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第二范式：主键必须最小"><span class="toc-number">2.</span> <span class="toc-text">第二范式：主键必须最小</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#第三范式-主键必须直接依赖"><span class="toc-number">3.</span> <span class="toc-text">第三范式:主键必须直接依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Summary"><span class="toc-number">4.</span> <span class="toc-text">Summary</span></a></li></ol>
 </div>
 <style>
     .left-col .switch-btn {
@@ -410,7 +406,7 @@
         </div>
         <script>
             window._bd_share_config={
-                "common":{"bdSnsKey":{},"bdText":"JVM的一些理解总结　| Leisure Moment　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+                "common":{"bdSnsKey":{},"bdText":"数据库范式　| Leisure Moment　","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
         </script>
     
 
@@ -426,7 +422,7 @@
     
       <div class="duoshuo" id="comments">
     <!-- 多说评论框 start -->
-    <div class="ds-thread" data-thread-key="2016/06/09/jvm-augments-summary/" data-title="JVM的一些理解总结" data-url="http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/"></div>
+    <div class="ds-thread" data-thread-key="2016/06/22/数据库范式/" data-title="数据库范式" data-url="http://truejasonfans.github.io/2016/06/22/数据库范式/"></div>
     <!-- 多说评论框 end -->
     <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
     <script type="text/javascript">
@@ -450,15 +446,13 @@
 
     <div class="scroll" id="post-nav-button">
         
-            <a href="/2016/06/22/数据库范式/" title="上一篇: 数据库范式">
-                <i class="fa fa-angle-left"></i>
-            </a>
+            <a href="/" title="回到主页"><i class="fa fa-home"></i></a>
         
 
         <a title="文章列表"><i class="fa fa-bars"></i><i class="fa fa-times"></i></a>
 
         
-            <a href="/2016/05/26/hexo-01/" title="下一篇: 第一篇杂记吧">
+            <a href="/2016/06/09/jvm-augments-summary/" title="下一篇: JVM的一些理解总结">
                 <i class="fa fa-angle-right"></i>
             </a>
         
