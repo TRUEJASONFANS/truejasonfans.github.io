@@ -1,0 +1,801 @@
+<!doctype html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+  
+  
+  
+
+  
+    
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    
+    
+    <link href="//fonts.googleapis.com/css?family=Lato:300,300italic,400,400italic,700,700italic&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+  
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
+
+
+  <meta name="keywords" content="java_fx," />
+
+
+
+
+
+  <link rel="alternate" href="/atom.xml" title="Leisure Moment" type="application/atom+xml" />
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/yuexuan.ico?v=5.1.1" />
+
+
+
+
+
+
+<meta name="description" content="Binding在fx的使用 Binding的概念soldPrice = listPrice - discounts + taxes通过这个表达式，如果你知道listPrice, discounts, taxes, 你是不是很快能计算出soldPrice? 这就是一个binding的关系,反之如果你知道了一个soldPrice,你能推算出其他3项吗？答案是no. 这里为我们揭示了binding中存在">
+<meta name="keywords" content="java_fx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="java_fx_binding">
+<meta property="og:url" content="http://truejasonfans.github.io/2016/12/18/java-fx-binding/index.html">
+<meta property="og:site_name" content="Leisure Moment">
+<meta property="og:description" content="Binding在fx的使用 Binding的概念soldPrice = listPrice - discounts + taxes通过这个表达式，如果你知道listPrice, discounts, taxes, 你是不是很快能计算出soldPrice? 这就是一个binding的关系,反之如果你知道了一个soldPrice,你能推算出其他3项吗？答案是no. 这里为我们揭示了binding中存在">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-12d0a5d087a88344.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-01931b910c192303.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-6f5115a552c75aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-cf3e4fd4730204df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-60fb60d4320dfd39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/2053209-0ce42ae455652888.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2018-04-01T13:06:40.078Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="java_fx_binding">
+<meta name="twitter:description" content="Binding在fx的使用 Binding的概念soldPrice = listPrice - discounts + taxes通过这个表达式，如果你知道listPrice, discounts, taxes, 你是不是很快能计算出soldPrice? 这就是一个binding的关系,反之如果你知道了一个soldPrice,你能推算出其他3项吗？答案是no. 这里为我们揭示了binding中存在">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/2053209-12d0a5d087a88344.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    fancybox: true,
+    motion: true,
+    duoshuo: {
+      userId: '0',
+      author: 'Author'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://truejasonfans.github.io/2016/12/18/java-fx-binding/"/>
+
+
+
+
+
+  <title>java_fx_binding | Leisure Moment</title>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail ">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Leisure Moment</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">乱花渐欲迷人眼，浅草才能没马蹄。最爱湖东行不足，绿杨阴里白沙堤。</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            Archives
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-sitemap">
+          <a href="/sitemap.xml" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-sitemap"></i> <br />
+            
+            Sitemap
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/12/18/java-fx-binding/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">java_fx_binding</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-18T22:22:37+08:00">
+                2016-12-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java-fx/" itemprop="url" rel="index">
+                    <span itemprop="name">java_fx</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="Binding在fx的使用"><a href="#Binding在fx的使用" class="headerlink" title="Binding在fx的使用"></a>Binding在fx的使用</h1><hr>
+<h2 id="Binding的概念"><a href="#Binding的概念" class="headerlink" title="Binding的概念"></a>Binding的概念</h2><p><code>soldPrice = listPrice - discounts + taxes</code><br>通过这个表达式，如果你知道listPrice, discounts, taxes, 你是不是很快能计算出soldPrice? 这就是一个binding的关系,反之如果你知道了一个soldPrice,你能推算出其他3项吗？答案是no. 这里为我们揭示了binding中存在方向的概念，是单向 or 双向。</p>
+<hr>
+<h3 id="NumberBinding"><a href="#NumberBinding" class="headerlink" title="NumberBinding"></a>NumberBinding</h3><ol>
+<li>利用property对象返回一个NumberBinding对象,当它的值没有被计算出来，它是invalid:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//NumberBinding</span><br><span class="line">IntegerProperty digit1 = new SimpleIntegerProperty(1);</span><br><span class="line">IntegerProperty digit2 = new SimpleIntegerProperty(2);</span><br><span class="line">NumberBinding numberBinding = digit1.add(digit2);</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br><span class="line">System.out.println(sum.getValue());</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-12d0a5d087a88344.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p> 2.或者它依赖的propery更新的时候，它也会失效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">digit1.set(3);</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-01931b910c192303.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<hr>
+<h3 id="Binding-in-String"><a href="#Binding-in-String" class="headerlink" title="Binding in String"></a>Binding in String</h3><ol>
+<li>直接使用property<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//StringBinding</span></span><br><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringProperty str3 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"33"</span>);</span><br><span class="line">str3.bind(str1.concat(str2));</span><br><span class="line">System.out.println(str3.get());</span><br></pre></td></tr></table></figure>
+</li>
+</ol>
+<p>2.使用StringExpression<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringExpression desc = str1.concat(str2);</span><br><span class="line">System.out.println(desc .get());</span><br></pre></td></tr></table></figure></p>
+<p>3.使用String binding<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringBinding strBinding = <span class="keyword">new</span> StringBinding() &#123;</span><br><span class="line">	              &#123;</span><br><span class="line">	              bind(str1.concat(str2));</span><br><span class="line">		      &#125;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">protected</span> String <span class="title">computeValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">return</span> str1.concat(str2).get();</span><br><span class="line">			&#125;&#125;;</span><br><span class="line">System.out.println(<span class="string">"StringBinding: + "</span> + strBinding.getValue());</span><br><span class="line">str2.set(<span class="string">"22"</span>);</span><br><span class="line">System.out.println(<span class="string">"StringBinding: + "</span> + strBinding.getValue());</span><br></pre></td></tr></table></figure></p>
+<hr>
+<h3 id="Binding-of-boolean"><a href="#Binding-of-boolean" class="headerlink" title="Binding of boolean"></a>Binding of boolean</h3><p>通过property之间的逻辑方法比较构造。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Book b1 = new Book(&quot;J1&quot;, 90, &quot;1234567890&quot;);</span><br><span class="line">Book b2 = new Book(&quot;J2&quot;, 80, &quot;0123456789&quot;);</span><br><span class="line">ObjectProperty&lt;Book&gt; book1 = new SimpleObjectProperty&lt;&gt;(b1);</span><br><span class="line">ObjectProperty&lt;Book&gt; book2 = new SimpleObjectProperty&lt;&gt;(b2);</span><br><span class="line">// Create a binding that computes if book1 and book2 are equal</span><br><span class="line">BooleanBinding isEqual = book1.isEqualTo(book2);</span><br><span class="line">System.out.println(isEqual.get());// false</span><br><span class="line">book2.set(b1);</span><br><span class="line">System.out.println(isEqual.get());// true</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">IntegerProperty x = new SimpleIntegerProperty(1);</span><br><span class="line">IntegerProperty y = new SimpleIntegerProperty(2);</span><br><span class="line">IntegerProperty z = new SimpleIntegerProperty(3);</span><br><span class="line">// Create a boolean expression for x &gt; y &amp;&amp; y &lt;&gt; z</span><br><span class="line">BooleanExpression condition = x.greaterThan(y).and(y.isNotEqualTo(z));</span><br><span class="line">System.out.println(condition.get());// false</span><br><span class="line">// Make the condition true by setting x to 3</span><br><span class="line">x.set(3);</span><br><span class="line">System.out.println(condition.get());// true</span><br></pre></td></tr></table></figure>
+<hr>
+<h3 id="单向绑定以及双向绑定"><a href="#单向绑定以及双向绑定" class="headerlink" title="单向绑定以及双向绑定"></a>单向绑定以及双向绑定</h3><h3 id="单向绑定实例-C-A-X-B"><a href="#单向绑定实例-C-A-X-B" class="headerlink" title="单向绑定实例 (C = A X B)"></a>单向绑定实例 (C = A X B)</h3><p>单向绑定只受绑定对象的影响，Binding对象（或这属性）自身的变化不影响绑定对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BoundProperty</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty x = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">10</span>);</span><br><span class="line">		IntegerProperty y = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">20</span>);</span><br><span class="line">		IntegerProperty z = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">60</span>);</span><br><span class="line">		z.bind(x.add(y));</span><br><span class="line">		System.out.println(<span class="string">"After binding z: Bound = "</span> + z.isBound() + <span class="string">", z = "</span></span><br><span class="line">				+ z.get());</span><br><span class="line">		<span class="comment">// Change x and y</span></span><br><span class="line">		x.set(<span class="number">15</span>);</span><br><span class="line">		y.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(<span class="string">"After changing x and y: Bound = "</span> + z.isBound()</span><br><span class="line">				+ <span class="string">", z = "</span> + z.get());</span><br><span class="line">		<span class="comment">// Unbind z</span></span><br><span class="line">		z.unbind();</span><br><span class="line">		<span class="comment">// Will not affect the value of z as it is not bound to x and y anymore</span></span><br><span class="line">		x.set(<span class="number">100</span>);</span><br><span class="line">		y.set(<span class="number">200</span>);</span><br><span class="line">		System.out.println(<span class="string">"After unbinding z: Bound = "</span> + z.isBound()</span><br><span class="line">				+ <span class="string">", z = "</span> + z.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-6f5115a552c75aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<p>###双向绑定<br>双向绑定，改变任何一方，都会触发另一方的改变，给予这种前提（X=Y), 两边必须是同一类型。</p>
+<p>一个简单的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BidirectionalBinding</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty x = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">1</span>);</span><br><span class="line">		IntegerProperty y = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerProperty z = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"Before binding:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		x.bindBidirectional(y);</span><br><span class="line">		System.out.println(<span class="string">"After binding-1:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		x.bindBidirectional(z);</span><br><span class="line">		System.out.println(<span class="string">"After binding-2:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"After changing z:"</span>);</span><br><span class="line">		z.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Remove bindings</span></span><br><span class="line">		x.unbindBidirectional(y);</span><br><span class="line">		x.unbindBidirectional(z);</span><br><span class="line">		System.out.println(<span class="string">"After unbinding and changing them separately:"</span>);</span><br><span class="line">		x.set(<span class="number">100</span>);</span><br><span class="line">		y.set(<span class="number">200</span>);</span><br><span class="line">		z.set(<span class="number">300</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">![Paste_Image.png](http:<span class="comment">//upload-images.jianshu.io/upload_images/2053209-2c30201f85a812b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"></span><br><span class="line">### 流式API</span><br><span class="line">流式 API 是Java fx 在Binding提供的福利 API. 通过这些API，可以向DSL 一样描述 依赖关系。</span><br><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FluentAPITest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//String property</span></span><br><span class="line">		StringProperty s1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"XX"</span>);</span><br><span class="line">		StringProperty s2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"qq"</span>);</span><br><span class="line">		StringExpression s3 = s1.concat(s2);</span><br><span class="line">		System.out.println(s3.get());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Number property</span></span><br><span class="line">		IntegerProperty i1 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">4</span>);</span><br><span class="line">		IntegerProperty i2 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerProperty i3 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerBinding ib = (IntegerBinding) i1.add(i2).subtract(i2).multiply(i2).divide(i3);</span><br><span class="line">		System.out.println(ib.get());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Boolean Property</span></span><br><span class="line">		BooleanProperty b1 = <span class="keyword">new</span> SimpleBooleanProperty(<span class="keyword">false</span>);</span><br><span class="line">		BooleanProperty b2 = <span class="keyword">new</span> SimpleBooleanProperty(<span class="keyword">true</span>);</span><br><span class="line">		BooleanBinding b3 = b1.isEqualTo(b2).isNotEqualTo(b2).not().not();</span><br><span class="line">		System.out.println(b3.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-cf3e4fd4730204df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h3 id="三元-API-操作"><a href="#三元-API-操作" class="headerlink" title="三元 API 操作"></a>三元 API 操作</h3><p>new When(condition).then(value1).otherwise(value2)<br>condition对象必须实现了ObservableBooleanValue接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TernaryTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty num = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">10</span>);</span><br><span class="line">		StringBinding desc = <span class="keyword">new</span> When(num.divide(<span class="number">2</span>).multiply(<span class="number">2</span>).isEqualTo(num)).then(<span class="string">"even"</span>).otherwise(<span class="string">"odd"</span>);</span><br><span class="line">		System.out.println(num.get() + <span class="string">" is "</span> + desc.get());</span><br><span class="line">		num.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(num.get() + <span class="string">" is "</span> + desc.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-60fb60d4320dfd39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<h3 id="Binding-Utility-Class"><a href="#Binding-Utility-Class" class="headerlink" title="Binding Utility Class"></a>Binding Utility Class</h3><p>Bingdings 类中包含之前提及全部流式API(诸如add,sustract,multiply,divide,concat,eqaul 等等).如果你不喜欢用流式API的写法，也可以用通过调用Bindings的方法的来满足你创建所需的binding.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BindingsClassTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		DoubleProperty radius = <span class="keyword">new</span> SimpleDoubleProperty(<span class="number">7.0</span>);</span><br><span class="line">		DoubleProperty area = <span class="keyword">new</span> SimpleDoubleProperty(<span class="number">0.0</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Bind area to an expression that computes the area of the circle</span></span><br><span class="line">		area.bind(Bindings.multiply(Bindings.multiply(radius, radius), Math.PI));</span><br><span class="line">		<span class="comment">// Create a string expression to describe the circle</span></span><br><span class="line">		StringExpression desc = Bindings.format(Locale.US, <span class="string">"Radius = %.2f, Area = %.2f"</span>, radius, area);</span><br><span class="line">		System.out.println(desc.get());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Change the radius</span></span><br><span class="line">		radius.set(<span class="number">14.0</span>);</span><br><span class="line">		System.out.println(desc.getValue());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="http://upload-images.jianshu.io/upload_images/2053209-0ce42ae455652888.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
+<hr>
+<h3 id="与UI-之间的binding"><a href="#与UI-之间的binding" class="headerlink" title="与UI 之间的binding"></a>与UI 之间的binding</h3><p>讲了这么多，如果你看过java fx 源码， 你猜到java fx 是如何实现UI 与 Model  的 data binding 吗？<br>其实java fx ui 类 的所有属性 基本上是 实现了property接口的对象。<br>比如 textField的textProperty,再比如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChoicBindingExample</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">  ObservableList cursors = FXCollections.observableArrayList(</span><br><span class="line">  Cursor.DEFAULT,</span><br><span class="line">  Cursor.CROSSHAIR,</span><br><span class="line">  Cursor.WAIT,</span><br><span class="line">  Cursor.TEXT,</span><br><span class="line">  Cursor.HAND,</span><br><span class="line">  Cursor.MOVE,</span><br><span class="line">  Cursor.N_RESIZE,</span><br><span class="line">  Cursor.NE_RESIZE,</span><br><span class="line">  Cursor.E_RESIZE,</span><br><span class="line">  Cursor.SE_RESIZE,</span><br><span class="line">  Cursor.S_RESIZE,</span><br><span class="line">  Cursor.SW_RESIZE,</span><br><span class="line">  Cursor.W_RESIZE,</span><br><span class="line">  Cursor.NW_RESIZE,</span><br><span class="line">  Cursor.NONE</span><br><span class="line">); </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Stage stage)</span> </span>&#123;</span><br><span class="line">  ChoiceBox choiceBoxRef = ChoiceBoxBuilder.create()</span><br><span class="line">  .items(cursors)</span><br><span class="line">  .build();</span><br><span class="line">VBox box = <span class="keyword">new</span> VBox();</span><br><span class="line">box.getChildren().add(choiceBoxRef);</span><br><span class="line"><span class="keyword">final</span> Scene scene = <span class="keyword">new</span> Scene(box,<span class="number">300</span>, <span class="number">250</span>);</span><br><span class="line">scene.setFill(<span class="keyword">null</span>);</span><br><span class="line">stage.setScene(scene);</span><br><span class="line">stage.show();</span><br><span class="line">scene.cursorProperty().bind(choiceBoxRef.getSelectionModel().selectedItemProperty());</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">launch(args);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <div>
+      
+        
+
+      
+    </div>
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/java-fx/" rel="tag"># java_fx</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2016/12/18/java-fx-property/" rel="next" title="java_fx_property">
+                <i class="fa fa-chevron-left"></i> java_fx_property
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2016/12/18/java-fx-css/" rel="prev" title="java_fx_css">
+                java_fx_css <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+          <img class="site-author-image" itemprop="image"
+               src="/uploads/kakaxi.jpg"
+               alt="zhong-wei" />
+          <p class="site-author-name" itemprop="name">zhong-wei</p>
+           
+              <p class="site-description motion-element" itemprop="description"></p>
+          
+        </div>
+        <nav class="site-state motion-element">
+
+          
+            <div class="site-state-item site-state-posts">
+              <a href="/archives/">
+                <span class="site-state-item-count">14</span>
+                <span class="site-state-item-name">posts</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-categories">
+              <a href="/categories/index.html">
+                <span class="site-state-item-count">3</span>
+                <span class="site-state-item-name">categories</span>
+              </a>
+            </div>
+          
+
+          
+            
+            
+            <div class="site-state-item site-state-tags">
+              <a href="/tags/index.html">
+                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-name">tags</span>
+              </a>
+            </div>
+          
+
+        </nav>
+
+        
+          <div class="feed-link motion-element">
+            <a href="/atom.xml" rel="alternate">
+              <i class="fa fa-rss"></i>
+              RSS
+            </a>
+          </div>
+        
+
+        <div class="links-of-author motion-element">
+          
+        </div>
+
+        
+        
+
+        
+        
+
+        
+
+
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Binding在fx的使用"><span class="nav-number">1.</span> <span class="nav-text">Binding在fx的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Binding的概念"><span class="nav-number">1.1.</span> <span class="nav-text">Binding的概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NumberBinding"><span class="nav-number">1.1.1.</span> <span class="nav-text">NumberBinding</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binding-in-String"><span class="nav-number">1.1.2.</span> <span class="nav-text">Binding in String</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binding-of-boolean"><span class="nav-number">1.1.3.</span> <span class="nav-text">Binding of boolean</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单向绑定以及双向绑定"><span class="nav-number">1.1.4.</span> <span class="nav-text">单向绑定以及双向绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#单向绑定实例-C-A-X-B"><span class="nav-number">1.1.5.</span> <span class="nav-text">单向绑定实例 (C = A X B)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三元-API-操作"><span class="nav-number">1.1.6.</span> <span class="nav-text">三元 API 操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Binding-Utility-Class"><span class="nav-number">1.1.7.</span> <span class="nav-text">Binding Utility Class</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与UI-之间的binding"><span class="nav-number">1.1.8.</span> <span class="nav-text">与UI 之间的binding</span></a></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright" >
+  
+  &copy;  2016 - 
+  <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhong-wei</span>
+</div>
+
+
+<div class="powered-by">
+  Powered by <a class="theme-link" href="https://hexo.io">Hexo</a>
+</div>
+
+<div class="theme-info">
+  Theme -
+  <a class="theme-link" href="https://github.com/iissnan/hexo-theme-next">
+    NexT.Muse
+  </a>
+</div>
+
+
+        
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+  
+  <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+
+  
+  <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+
+  
+  <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+
+  
+  <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+
+  
+  <script type="text/javascript" src="/lib/canvas-nest/canvas-nest.min.js"></script>
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.1"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.1"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.1"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.1"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+<script>
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';        
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

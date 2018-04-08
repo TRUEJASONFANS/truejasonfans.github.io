@@ -3,17 +3,15 @@
 
 
     
-    
-    
   <url>
-    <loc>http://truejasonfans.github.io/2016/06/22/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%8C%83%E5%BC%8F/</loc>
-    <lastmod>2018-04-01T13:06:40.079Z</lastmod>
+    <loc>http://truejasonfans.github.io/2018/04/02/deploy-flask-on-mac-0/</loc>
+    <lastmod>2018-04-08T15:58:29.580Z</lastmod>
     <data>
         <display>
-        <title>数据库范式</title>
-        <pubTime>2016-06-22T14:11:25.000Z</pubTime>
+        <title>Deploy flask on mac</title>
+        <pubTime>2018-04-02T13:32:47.000Z</pubTime>
         
-        <tag>数据库原理</tag>
+        <tag>python</tag>
          
          
            
@@ -21,6 +19,8 @@
     </data>
     </url>
 
+    
+    
     
   <url>
     <loc>http://truejasonfans.github.io/2017/09/18/Maven%E9%85%8D%E7%BD%AE/</loc>
@@ -41,6 +41,23 @@
     
     
   <url>
+    <loc>http://truejasonfans.github.io/2016/06/22/%E6%95%B0%E6%8D%AE%E5%BA%93%E8%8C%83%E5%BC%8F/</loc>
+    <lastmod>2018-04-01T13:06:40.079Z</lastmod>
+    <data>
+        <display>
+        <title>数据库范式</title>
+        <pubTime>2016-06-22T14:11:25.000Z</pubTime>
+        
+        <tag>数据库原理</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://truejasonfans.github.io/2016/05/26/hexo-01/</loc>
     <lastmod>2018-04-01T13:06:40.078Z</lastmod>
     <data>
@@ -55,23 +72,6 @@
              
               <breadCrumb title="个人生活" url="http://truejasonfans.github.io/categories/%E4%B8%AA%E4%BA%BA%E7%94%9F%E6%B4%BB/"/>
           
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://truejasonfans.github.io/2017/09/18/redux%E5%90%8C%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2018-04-01T13:06:40.078Z</lastmod>
-    <data>
-        <display>
-        <title>redux同步使用学习</title>
-        <pubTime>2017-09-17T16:23:02.000Z</pubTime>
-        
-        <tag>Web前端</tag>
-         
-         
-           
         </display>
     </data>
     </url>
@@ -98,20 +98,17 @@
 
     
   <url>
-    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-property/</loc>
-    <lastmod>2018-04-01T13:06:40.077Z</lastmod>
+    <loc>http://truejasonfans.github.io/2017/09/18/redux%E5%90%8C%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2018-04-01T13:06:40.078Z</lastmod>
     <data>
         <display>
-        <title>java_fx_property</title>
-        <pubTime>2016-12-18T14:21:32.000Z</pubTime>
+        <title>redux同步使用学习</title>
+        <pubTime>2017-09-17T16:23:02.000Z</pubTime>
         
-        <tag>java_fx</tag>
+        <tag>Web前端</tag>
          
          
            
-             
-              <breadCrumb title="java_fx" url="http://truejasonfans.github.io/categories/java-fx/"/>
-          
         </display>
     </data>
     </url>
@@ -155,12 +152,12 @@
 
     
   <url>
-    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-css/</loc>
-    <lastmod>2018-04-01T13:06:40.076Z</lastmod>
+    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-property/</loc>
+    <lastmod>2018-04-01T13:06:40.077Z</lastmod>
     <data>
         <display>
-        <title>java_fx_css</title>
-        <pubTime>2016-12-18T14:26:48.000Z</pubTime>
+        <title>java_fx_property</title>
+        <pubTime>2016-12-18T14:21:32.000Z</pubTime>
         
         <tag>java_fx</tag>
          
@@ -192,17 +189,20 @@
 
     
   <url>
-    <loc>http://truejasonfans.github.io/2016/10/18/instructions-of-hexo/</loc>
-    <lastmod>2018-04-01T13:06:40.075Z</lastmod>
+    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-css/</loc>
+    <lastmod>2018-04-01T13:06:40.076Z</lastmod>
     <data>
         <display>
-        <title>Hexo 文章帮助指南</title>
-        <pubTime>2016-10-18T14:45:46.000Z</pubTime>
+        <title>java_fx_css</title>
+        <pubTime>2016-12-18T14:26:48.000Z</pubTime>
         
-        <tag>hexo</tag>
+        <tag>java_fx</tag>
          
          
            
+             
+              <breadCrumb title="java_fx" url="http://truejasonfans.github.io/categories/java-fx/"/>
+          
         </display>
     </data>
     </url>
@@ -217,6 +217,23 @@
         <pubTime>2017-12-24T07:18:27.000Z</pubTime>
         
         <tag>Web前端</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://truejasonfans.github.io/2016/10/18/instructions-of-hexo/</loc>
+    <lastmod>2018-04-01T13:06:40.075Z</lastmod>
+    <data>
+        <display>
+        <title>Hexo 文章帮助指南</title>
+        <pubTime>2016-10-18T14:45:46.000Z</pubTime>
+        
+        <tag>hexo</tag>
          
          
            
