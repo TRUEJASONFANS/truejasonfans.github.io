@@ -2,7 +2,7 @@
 title: JVM的一些理解总结
 date: 2016-06-09 23:15:03
 tags: java
-categories: 编程艺术
+categories: java
 ---
 jvm的**堆内存模型**，
 
