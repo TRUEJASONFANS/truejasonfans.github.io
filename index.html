@@ -277,6 +277,421 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/运用动态代理做拦截式检测/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/运用动态代理做拦截式检测/" itemprop="url">AOP实践</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T23:52:27+08:00">
+                2018-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入。</p>
+<p>   根据织入的时期，可以分为以下几个时期</p>
+<ul>
+<li>编译前</li>
+<li>编译后</li>
+<li>装载后</li>
+<li>运行期</li>
+</ul>
+<p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p>
+<p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p>
+<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol>
+<li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li>
+<li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AppClientProxyHandler 动态代理接口 AppClient 接口，对于applient 接口的调用都会被代理</p>
+<p>增强的代码就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
+<ol>
+<li>定义方法调用前回调对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>定义方法调用后回调对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
+</ol>
+<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">=======</span><br><span class="line">```java</span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; <span class="number">7</span>d588e47c069b42212d767c507815f82be4b1ffc</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/组件状态管理/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/组件状态管理/" itemprop="url">组件状态管理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T23:52:27+08:00">
+                2018-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
+</li>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
+</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
+</ol>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/vue/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/vue/" itemprop="url">vue笔记</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T22:33:40+08:00">
+                2018-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <ol>
+<li>$代表vue暴露的实力属性与方法</li>
+<li>@ 代表v-on 添建callback :代表v-bind添加双向绑定</li>
+<li>computed基于依赖缓存和methods则不是</li>
+<li>当computed需要定制的时候采用watch选项</li>
+<li>data必须是一个函数，否则同类组件将共享状态</li>
+<li>插槽用来向子组件传递内容</li>
+<li></li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/06/30/nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -751,129 +1166,6 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/Maven配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/18/Maven配置/" itemprop="url">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
-                2017-09-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol>
-<li>下载Maven binary </li>
-<li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li>
-<li><p>修改conf文件下setting.xml,设置为阿里源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">		&lt;mirror&gt;</span><br><span class="line">    	  &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    	  &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    	  &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">    	  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    	&lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打开eclipse-&gt;preference-&gt;Maven</p>
-</li>
-<li>修改Installation，自己所装maven路径</li>
-<li>修改User setting, 制定为设置阿里源的setting.xml</li>
-<li>右键maven工程 -&gt; Maven-&gt; Update Project</li>
-</ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/redux同步使用学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -996,6 +1288,129 @@
 <hr>
 <h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><hr>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Provider, connect &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// React component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; value, onIncreaseClick &#125; = <span class="keyword">this</span>.props</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;&#123;value&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;onIncreaseClick&#125;&gt;Increase&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Counter.propTypes = &#123;</span></span><br><span class="line"><span class="regexp">  value: PropTypes.number.isRequired,</span></span><br><span class="line"><span class="regexp">  onIncreaseClick: PropTypes.func.isRequired</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Action</span></span><br><span class="line"><span class="regexp">const increaseAction = &#123; type: 'increase' &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Reducer</span></span><br><span class="line"><span class="regexp">function counter(state = &#123; count: 0 &#125;, action) &#123;</span></span><br><span class="line"><span class="regexp">  const count = state.count</span></span><br><span class="line"><span class="regexp">  switch (action.type) &#123;</span></span><br><span class="line"><span class="regexp">    case 'increase':</span></span><br><span class="line"><span class="regexp">      return &#123; count: count + 1 &#125;</span></span><br><span class="line"><span class="regexp">    default:</span></span><br><span class="line"><span class="regexp">      return state</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Store</span></span><br><span class="line"><span class="regexp">const store = createStore(counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux state to component props</span></span><br><span class="line"><span class="regexp">function mapStateToProps(state) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    value: state.count</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux actions to component props</span></span><br><span class="line"><span class="regexp">function mapDispatchToProps(dispatch) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    onIncreaseClick: () =&gt; dispatch(increaseAction)</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Connected Component</span></span><br><span class="line"><span class="regexp">const App = connect(</span></span><br><span class="line"><span class="regexp">  mapStateToProps,</span></span><br><span class="line"><span class="regexp">  mapDispatchToProps</span></span><br><span class="line"><span class="regexp">)(Counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">ReactDOM.render(</span></span><br><span class="line"><span class="regexp">  &lt;Provider store=&#123;store&#125;&gt;</span></span><br><span class="line"><span class="regexp">    &lt;App /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/Maven配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/18/Maven配置/" itemprop="url">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
+                2017-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol>
+<li>下载Maven binary </li>
+<li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li>
+<li><p>修改conf文件下setting.xml,设置为阿里源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">		&lt;mirror&gt;</span><br><span class="line">    	  &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    	  &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    	  &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">    	  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    	&lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开eclipse-&gt;preference-&gt;Maven</p>
+</li>
+<li>修改Installation，自己所装maven路径</li>
+<li>修改User setting, 制定为设置阿里源的setting.xml</li>
+<li>右键maven工程 -&gt; Maven-&gt; Update Project</li>
+</ol>
+
           
         
       
@@ -1167,500 +1582,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/06/09/css-learning/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/09/css-learning/" itemprop="url">CSS 原理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-09T00:17:27+08:00">
-                2017-06-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p><img src="http://upload-images.jianshu.io/upload_images/2053209-3b0d0fd9b8621146.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<h3 id="css-盒子模型"><a href="#css-盒子模型" class="headerlink" title="css 盒子模型"></a>css 盒子模型</h3><p><img src="http://upload-images.jianshu.io/upload_images/2053209-6c70f2e96a08b509.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-25389b6a34185752.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="image.png"></p>
-<ul>
-<li>内容(content)</li>
-<li>边框(border): 产生内边距padding和外边距margin</li>
-<li>margin 到边距是透明的</li>
-</ul>
-<hr>
-<h4 id="派生选择器"><a href="#派生选择器" class="headerlink" title="派生选择器"></a>派生选择器</h4><p>1.后代选择器（只有符合上下关系）<br>选中<code>&lt;li&gt;</code>标签下的<code>&lt;strong&gt;</code>标签<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">li strong &#123;</span><br><span class="line">    font-style: italic;</span><br><span class="line">    font-weight: normal;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>2.子元素选择器<br>不希望选择任意的后代元素，而是希望缩小范围，只选择某个元素的子元素<br><code>h1 &gt; strong {color:red;}</code><br>只作用域第一个strong而不作用于第二个，因为第二个不是直接的子元素。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;h1&gt;This is &lt;strong&gt;very&lt;/strong&gt; &lt;strong&gt;very&lt;/strong&gt; important.&lt;/h1&gt;</span><br><span class="line">&lt;h1&gt;This is &lt;em&gt;really &lt;strong&gt;very&lt;/strong&gt;&lt;/em&gt; important.&lt;/h1&gt;</span><br></pre></td></tr></table></figure>
-<p>3.相邻元素选择器<br>相邻兄弟选择器使用了加号（+），即相邻兄弟结合符（Adjacent sibling combinator）(用一个结合符只能选择两个相邻兄弟中的第二个元素)<br><code>li + li {font-weight:bold;}</code>  item2. item3 被选中<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;ul&gt;</span><br><span class="line">    &lt;li&gt;List item 1&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;List item 2&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;List item 3&lt;/li&gt;</span><br><span class="line">  &lt;/ul&gt;</span><br><span class="line">  &lt;ol&gt;</span><br><span class="line">    &lt;li&gt;List item 1&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;List item 2&lt;/li&gt;</span><br><span class="line">    &lt;li&gt;List item 3&lt;/li&gt;</span><br><span class="line">  &lt;/ol&gt;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="一些难懂的css-特性"><a href="#一些难懂的css-特性" class="headerlink" title="一些难懂的css 特性"></a>一些难懂的css 特性</h3><h4 id="display"><a href="#display" class="headerlink" title="display"></a>display</h4><p>display 属性规定元素应该生成的框的类型,默认值：<br>inline<br>继承性：    no<br>版本：    CSS1<br>JavaScript 语法：    object.style.display=”inline”<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">none	此元素不会被显示。</span><br><span class="line">block	此元素将显示为块级元素，此元素前后会带有换行符。</span><br><span class="line">inline	默认。此元素会被显示为内联元素，元素前后没有换行符。</span><br><span class="line">inline-block	行内块元素。（CSS2.1 新增的值）</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/12/18/java-fx-css/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/18/java-fx-css/" itemprop="url">java_fx_css</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-18T22:26:48+08:00">
-                2016-12-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java-fx/" itemprop="url" rel="index">
-                    <span itemprop="name">java_fx</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h3 id="java-css-与HTML-css-语法类似"><a href="#java-css-与HTML-css-语法类似" class="headerlink" title="java css 与HTML css 语法类似"></a>java css 与HTML css 语法类似</h3><p>Selector 选择器：</p>
-<ul>
-<li><p># ID (选择某ID的node们)</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-id">#closeButton</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>. className(选择定义某个class的node们)</p>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span><span class="selector-id">#closeButton</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>选择ID既为closeButton又属于button类的node</p>
-<ul>
-<li>归组同样的样式<figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.label</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>等价于：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span>, <span class="selector-class">.label</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>后代选择器（选择某个类型的后代类型）<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/*选则祖先为hbox类样式的.button样式节点*/</span></span><br><span class="line"><span class="selector-class">.hbox</span> <span class="selector-class">.button</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>子节点选择器（选择某个父类型的子类型）<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.hbox</span> &gt; <span class="selector-class">.button</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: blue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>状态选择器也称为伪类型选择器，它会匹配当前所处状态的node，比如匹配拥有focus的，鼠标的hover等等<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.button</span><span class="selector-pseudo">:hover</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="样式皮肤主题的区别-styles-skin-themes"><a href="#样式皮肤主题的区别-styles-skin-themes" class="headerlink" title="样式皮肤主题的区别(styles,skin,themes)"></a>样式皮肤主题的区别(styles,skin,themes)</h3><p>styles 控件级别<br>skin  应用级别<br>themes  操作系统级别</p>
-<hr>
-<h3 id="样式的取名"><a href="#样式的取名" class="headerlink" title="样式的取名"></a>样式的取名</h3><p>Property names in JavaFX styles start with -fx-. For example, the property name font-size in normal CSS<br>styles becomes -fx-font-size in JavaFX CSS style. JavaFX uses a convention to map the style property names<br>to the instance variables. It takes an instance variable; it inserts a hyphen between two words; if the instance variable<br>consists of multiple words, it converts the name to the lowercase and prefixes it with -fx-. For example, for an<br>instance variable named textAlignment, the style property name would be -fx-text-alignment</p>
-<hr>
-<h3 id="直接修改应用样式"><a href="#直接修改应用样式" class="headerlink" title="直接修改应用样式"></a>直接修改应用样式</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Application.setUserAgentStylesheet(Application.STYLESHEET_CASPIAN);</span><br></pre></td></tr></table></figure>
-<p>setUserAgentStyleSheet方法可以直接替换应用的style.</p>
-<h2 id="内联写法与-样式表单的区别（difference-between-inline-style-and-style-sheet-style"><a href="#内联写法与-样式表单的区别（difference-between-inline-style-and-style-sheet-style" class="headerlink" title="内联写法与 样式表单的区别（difference between inline style and style sheet style)"></a>内联写法与 样式表单的区别（difference between inline style and style sheet style)</h2><h3 id="设置css-样式的优先级"><a href="#设置css-样式的优先级" class="headerlink" title="设置css 样式的优先级"></a>设置css 样式的优先级</h3><ol>
-<li><p>Inline style (the highest priority) 内联写法</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">node.setStyle(<span class="string">"-fx....."</span>);</span><br><span class="line"><span class="comment">//不能重复的setStyle(styleProperty)，以最后一次setStyle为准</span></span><br><span class="line"><span class="comment">//错误的写法</span></span><br><span class="line">    node.setStyle(<span class="string">"-fx-background-color: #9400D3"</span>);</span><br><span class="line">    node.setStyle(<span class="string">"-fx-background-insets: 5"</span>);</span><br><span class="line">    node.setStyle(<span class="string">"-fx-background-radius: 10"</span>);</span><br><span class="line"><span class="comment">//正确的写法</span></span><br><span class="line">    node.setStyle(<span class="string">"-fx-background-color: #9400D3;-fx-background-insets: 5;-fx-background-radius: 0"</span>);</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>Parent style sheets  父节点样式表单</p>
-</li>
-<li>Scene style sheets   场景样式表单</li>
-<li>Values set in the code using JavaFX API(直接API调用: setFont())</li>
-<li>User agent style sheets (the lowest priority)</li>
-</ol>
-<hr>
-<h3 id="css-属性的继承"><a href="#css-属性的继承" class="headerlink" title="css 属性的继承"></a>css 属性的继承</h3><p>Java fx 对于css 属性有两种继承机制：</p>
-<ol>
-<li>一种是继承属性类型 （通过类的继承关系继承）</li>
-<li>一种是继承属性值<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CSSInheritance</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		Application.launch(args);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Stage stage)</span> </span>&#123;</span><br><span class="line">		Button okBtn = <span class="keyword">new</span> Button(<span class="string">"OK"</span>);</span><br><span class="line">		Button cancelBtn = <span class="keyword">new</span> Button(<span class="string">"Cancel"</span>);</span><br><span class="line"></span><br><span class="line">		HBox root = <span class="keyword">new</span> HBox(<span class="number">10</span>); <span class="comment">// 10px spacing</span></span><br><span class="line">		root.getChildren().addAll(okBtn, cancelBtn);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Set styles for the OK button and its parent HBox</span></span><br><span class="line">		root.setStyle(<span class="string">"-fx-cursor: hand;-fx-border-color: blue;-fx-border-width: 5px;"</span>);</span><br><span class="line">		okBtn.setStyle(<span class="string">"-fx-border-color: red;-fx-border-width: inherit;"</span>);</span><br><span class="line"></span><br><span class="line">		Scene scene = <span class="keyword">new</span> Scene(root);</span><br><span class="line">		stage.setScene(scene);</span><br><span class="line">		stage.setTitle(<span class="string">"CSS Inheritance"</span>);</span><br><span class="line">		stage.show();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>![Upload Paste_Image.png failed. Please try again.]</p>
-<h3 id="css-属性值类型"><a href="#css-属性值类型" class="headerlink" title="css 属性值类型"></a>css 属性值类型</h3><ul>
-<li>inherit : fx-xxx: inherit(继承父节点的样式)</li>
-<li>boolean(true or false) : -fx-display-caret: false</li>
-<li>string : -fx-skin:”com.xxx.xxxSkin” </li>
-<li>number : -fx-opacity:0.60</li>
-<li>angle : -fx-rotate:45deg</li>
-<li>point : 用 x,y 表示横纵坐标</li>
-<li>color-stop: 颜色梯度</li>
-<li>URI ：.image-view {-fx-image: url(“<a href="http://jdojo.com/myimage.png&quot;);}" target="_blank" rel="noopener">http://jdojo.com/myimage.png&quot;);}</a>  描述资源位置</li>
-<li>effect ： 阴影效果， 使用dropshadow和innershadow两个css 函数,参数<br>.drop-shadow-1 {-fx-effect: dropshadow(gaussian, gray, 10, 0.6, 10, 10);}</li>
-<li>font type: <figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//散开的写法</span><br><span class="line"><span class="selector-class">.my-font-style</span> &#123;</span><br><span class="line"><span class="attribute">-fx-font-family</span>: <span class="string">"serif"</span>;</span><br><span class="line"><span class="attribute">-fx-font-size</span>: <span class="number">20px</span>;</span><br><span class="line"><span class="attribute">-fx-font-style</span>: normal;</span><br><span class="line"><span class="attribute">-fx-font-weight</span>: bolder;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>一句式写法<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.my-font-style</span> &#123;</span><br><span class="line"><span class="attribute">-fx-font</span>: italic bolder <span class="number">20px</span> <span class="string">"serif"</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<ul>
-<li>paint<br>A paint type value specifies a color.(定制你的动态颜色）<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.my-style &#123;</span><br><span class="line">-fx-fill: linear-gradient(from 0% 0% to 100% 0%, black 0%, red 100%);</span><br><span class="line">-fx-background-color: radial-gradient(radius 100%, black, red);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>对于固定的颜色，你可以用<br>Using named colors(已命名定义好的颜色）<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.my-style</span> &#123;</span><br><span class="line"><span class="attribute">-fx-background-color</span>: red;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Using looked-up colors<br>在根节点中定义，然后在子节点中向上查找所得：<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.root</span> &#123;</span><br><span class="line"><span class="attribute">my-color</span>: black;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.my-style</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: my-color;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Using the rgb() and rgba() functions<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* 使用rgb或者rgba*/</span></span><br><span class="line"><span class="selector-class">.my-style-1</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="built_in">rgb</span>(0, 0, 255);</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.my-style-2</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="built_in">rgba</span>(0, 0, 255, 0.5);</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/*16进制 */</span></span><br><span class="line"><span class="selector-class">.my-style-3</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="number">#0000ff</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">/* 8 进制*/</span></span><br><span class="line"><span class="selector-class">.my-style-4</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="number">#0bc</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Using the hsb() or hsba() function<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.my-style-1</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="built_in">hsb</span>(200, 70%, 40%);</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.my-style-2</span> &#123;</span><br><span class="line"><span class="attribute">-fx-fill</span>: <span class="built_in">hsba</span>(200, 70%, 40%, 0.30);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>Using color functions: derive() and ladder()<br><figure class="highlight css"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="selector-class">.root</span> &#123;</span><br><span class="line"><span class="attribute">my-base-text-color</span>: red;</span><br><span class="line">&#125;</span><br><span class="line"><span class="selector-class">.my-style</span> &#123;</span><br><span class="line"><span class="attribute">-fx-text-fill</span>: <span class="built_in">ladder</span>(my-base-text-color, white 29%, black 30%);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>ladder函数依赖于my-base-text-color的光亮程度,低于29%为红色，反之为黑色。</p>
-<h3 id="背景色的几个属性"><a href="#背景色的几个属性" class="headerlink" title="背景色的几个属性"></a>背景色的几个属性</h3><p>-fx-background-color: 背景颜色<br>-fx-background-insets: 背景内边框距离外边框距离<br>-fx-background-radius: 背景边框矩形四个角半径</p>
-<h3 id="边界的几个属性"><a href="#边界的几个属性" class="headerlink" title="边界的几个属性"></a>边界的几个属性</h3><p>-fx-border-color : 边框颜色<br>-fx-border-width ： 边框厚度<br>-fx-border-radius ： 边框圆角半径<br>-fx-border-insets ： 边框距离边界距离（layoutbounds)<br>-fx-border-style: 边框线样式，比如点线：-fx-border-style: dotted</p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/12/18/java-fx-binding/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2016/12/18/java-fx-binding/" itemprop="url">java_fx_binding</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-12-18T22:22:37+08:00">
-                2016-12-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java-fx/" itemprop="url" rel="index">
-                    <span itemprop="name">java_fx</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Binding在fx的使用"><a href="#Binding在fx的使用" class="headerlink" title="Binding在fx的使用"></a>Binding在fx的使用</h1><hr>
-<h2 id="Binding的概念"><a href="#Binding的概念" class="headerlink" title="Binding的概念"></a>Binding的概念</h2><p><code>soldPrice = listPrice - discounts + taxes</code><br>通过这个表达式，如果你知道listPrice, discounts, taxes, 你是不是很快能计算出soldPrice? 这就是一个binding的关系,反之如果你知道了一个soldPrice,你能推算出其他3项吗？答案是no. 这里为我们揭示了binding中存在方向的概念，是单向 or 双向。</p>
-<hr>
-<h3 id="NumberBinding"><a href="#NumberBinding" class="headerlink" title="NumberBinding"></a>NumberBinding</h3><ol>
-<li>利用property对象返回一个NumberBinding对象,当它的值没有被计算出来，它是invalid:<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">//NumberBinding</span><br><span class="line">IntegerProperty digit1 = new SimpleIntegerProperty(1);</span><br><span class="line">IntegerProperty digit2 = new SimpleIntegerProperty(2);</span><br><span class="line">NumberBinding numberBinding = digit1.add(digit2);</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br><span class="line">System.out.println(sum.getValue());</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-12d0a5d087a88344.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<p> 2.或者它依赖的propery更新的时候，它也会失效<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">digit1.set(3);</span><br><span class="line">System.out.println(&quot;sum.isValid(): &quot; + sum.isValid());</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-01931b910c192303.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<hr>
-<h3 id="Binding-in-String"><a href="#Binding-in-String" class="headerlink" title="Binding in String"></a>Binding in String</h3><ol>
-<li>直接使用property<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//StringBinding</span></span><br><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringProperty str3 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"33"</span>);</span><br><span class="line">str3.bind(str1.concat(str2));</span><br><span class="line">System.out.println(str3.get());</span><br></pre></td></tr></table></figure>
-</li>
-</ol>
-<p>2.使用StringExpression<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringExpression desc = str1.concat(str2);</span><br><span class="line">System.out.println(desc .get());</span><br></pre></td></tr></table></figure></p>
-<p>3.使用String binding<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">StringProperty str1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"11"</span>);</span><br><span class="line">StringProperty str2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"22"</span>);</span><br><span class="line">StringBinding strBinding = <span class="keyword">new</span> StringBinding() &#123;</span><br><span class="line">	              &#123;</span><br><span class="line">	              bind(str1.concat(str2));</span><br><span class="line">		      &#125;</span><br><span class="line">			<span class="meta">@Override</span></span><br><span class="line">			<span class="function"><span class="keyword">protected</span> String <span class="title">computeValue</span><span class="params">()</span> </span>&#123;</span><br><span class="line">				<span class="keyword">return</span> str1.concat(str2).get();</span><br><span class="line">			&#125;&#125;;</span><br><span class="line">System.out.println(<span class="string">"StringBinding: + "</span> + strBinding.getValue());</span><br><span class="line">str2.set(<span class="string">"22"</span>);</span><br><span class="line">System.out.println(<span class="string">"StringBinding: + "</span> + strBinding.getValue());</span><br></pre></td></tr></table></figure></p>
-<hr>
-<h3 id="Binding-of-boolean"><a href="#Binding-of-boolean" class="headerlink" title="Binding of boolean"></a>Binding of boolean</h3><p>通过property之间的逻辑方法比较构造。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Book b1 = new Book(&quot;J1&quot;, 90, &quot;1234567890&quot;);</span><br><span class="line">Book b2 = new Book(&quot;J2&quot;, 80, &quot;0123456789&quot;);</span><br><span class="line">ObjectProperty&lt;Book&gt; book1 = new SimpleObjectProperty&lt;&gt;(b1);</span><br><span class="line">ObjectProperty&lt;Book&gt; book2 = new SimpleObjectProperty&lt;&gt;(b2);</span><br><span class="line">// Create a binding that computes if book1 and book2 are equal</span><br><span class="line">BooleanBinding isEqual = book1.isEqualTo(book2);</span><br><span class="line">System.out.println(isEqual.get());// false</span><br><span class="line">book2.set(b1);</span><br><span class="line">System.out.println(isEqual.get());// true</span><br></pre></td></tr></table></figure></p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">IntegerProperty x = new SimpleIntegerProperty(1);</span><br><span class="line">IntegerProperty y = new SimpleIntegerProperty(2);</span><br><span class="line">IntegerProperty z = new SimpleIntegerProperty(3);</span><br><span class="line">// Create a boolean expression for x &gt; y &amp;&amp; y &lt;&gt; z</span><br><span class="line">BooleanExpression condition = x.greaterThan(y).and(y.isNotEqualTo(z));</span><br><span class="line">System.out.println(condition.get());// false</span><br><span class="line">// Make the condition true by setting x to 3</span><br><span class="line">x.set(3);</span><br><span class="line">System.out.println(condition.get());// true</span><br></pre></td></tr></table></figure>
-<hr>
-<h3 id="单向绑定以及双向绑定"><a href="#单向绑定以及双向绑定" class="headerlink" title="单向绑定以及双向绑定"></a>单向绑定以及双向绑定</h3><h3 id="单向绑定实例-C-A-X-B"><a href="#单向绑定实例-C-A-X-B" class="headerlink" title="单向绑定实例 (C = A X B)"></a>单向绑定实例 (C = A X B)</h3><p>单向绑定只受绑定对象的影响，Binding对象（或这属性）自身的变化不影响绑定对象。<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BoundProperty</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty x = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">10</span>);</span><br><span class="line">		IntegerProperty y = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">20</span>);</span><br><span class="line">		IntegerProperty z = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">60</span>);</span><br><span class="line">		z.bind(x.add(y));</span><br><span class="line">		System.out.println(<span class="string">"After binding z: Bound = "</span> + z.isBound() + <span class="string">", z = "</span></span><br><span class="line">				+ z.get());</span><br><span class="line">		<span class="comment">// Change x and y</span></span><br><span class="line">		x.set(<span class="number">15</span>);</span><br><span class="line">		y.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(<span class="string">"After changing x and y: Bound = "</span> + z.isBound()</span><br><span class="line">				+ <span class="string">", z = "</span> + z.get());</span><br><span class="line">		<span class="comment">// Unbind z</span></span><br><span class="line">		z.unbind();</span><br><span class="line">		<span class="comment">// Will not affect the value of z as it is not bound to x and y anymore</span></span><br><span class="line">		x.set(<span class="number">100</span>);</span><br><span class="line">		y.set(<span class="number">200</span>);</span><br><span class="line">		System.out.println(<span class="string">"After unbinding z: Bound = "</span> + z.isBound()</span><br><span class="line">				+ <span class="string">", z = "</span> + z.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-6f5115a552c75aff.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<p>###双向绑定<br>双向绑定，改变任何一方，都会触发另一方的改变，给予这种前提（X=Y), 两边必须是同一类型。</p>
-<p>一个简单的例子：<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BidirectionalBinding</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty x = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">1</span>);</span><br><span class="line">		IntegerProperty y = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerProperty z = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">3</span>);</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"Before binding:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		x.bindBidirectional(y);</span><br><span class="line">		System.out.println(<span class="string">"After binding-1:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		x.bindBidirectional(z);</span><br><span class="line">		System.out.println(<span class="string">"After binding-2:"</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		System.out.println(<span class="string">"After changing z:"</span>);</span><br><span class="line">		z.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Remove bindings</span></span><br><span class="line">		x.unbindBidirectional(y);</span><br><span class="line">		x.unbindBidirectional(z);</span><br><span class="line">		System.out.println(<span class="string">"After unbinding and changing them separately:"</span>);</span><br><span class="line">		x.set(<span class="number">100</span>);</span><br><span class="line">		y.set(<span class="number">200</span>);</span><br><span class="line">		z.set(<span class="number">300</span>);</span><br><span class="line">		System.out.println(<span class="string">"x="</span> + x.get() + <span class="string">", y="</span> + y.get() + <span class="string">", z="</span> + z.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line">``` </span><br><span class="line"></span><br><span class="line">![Paste_Image.png](http:<span class="comment">//upload-images.jianshu.io/upload_images/2053209-2c30201f85a812b6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)</span></span><br><span class="line"></span><br><span class="line">### 流式API</span><br><span class="line">流式 API 是Java fx 在Binding提供的福利 API. 通过这些API，可以向DSL 一样描述 依赖关系。</span><br><span class="line">```java</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">FluentAPITest</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//String property</span></span><br><span class="line">		StringProperty s1 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"XX"</span>);</span><br><span class="line">		StringProperty s2 = <span class="keyword">new</span> SimpleStringProperty(<span class="string">"qq"</span>);</span><br><span class="line">		StringExpression s3 = s1.concat(s2);</span><br><span class="line">		System.out.println(s3.get());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Number property</span></span><br><span class="line">		IntegerProperty i1 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">4</span>);</span><br><span class="line">		IntegerProperty i2 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerProperty i3 = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">2</span>);</span><br><span class="line">		IntegerBinding ib = (IntegerBinding) i1.add(i2).subtract(i2).multiply(i2).divide(i3);</span><br><span class="line">		System.out.println(ib.get());</span><br><span class="line">		</span><br><span class="line">		<span class="comment">//Boolean Property</span></span><br><span class="line">		BooleanProperty b1 = <span class="keyword">new</span> SimpleBooleanProperty(<span class="keyword">false</span>);</span><br><span class="line">		BooleanProperty b2 = <span class="keyword">new</span> SimpleBooleanProperty(<span class="keyword">true</span>);</span><br><span class="line">		BooleanBinding b3 = b1.isEqualTo(b2).isNotEqualTo(b2).not().not();</span><br><span class="line">		System.out.println(b3.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-cf3e4fd4730204df.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<h3 id="三元-API-操作"><a href="#三元-API-操作" class="headerlink" title="三元 API 操作"></a>三元 API 操作</h3><p>new When(condition).then(value1).otherwise(value2)<br>condition对象必须实现了ObservableBooleanValue接口<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TernaryTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		IntegerProperty num = <span class="keyword">new</span> SimpleIntegerProperty(<span class="number">10</span>);</span><br><span class="line">		StringBinding desc = <span class="keyword">new</span> When(num.divide(<span class="number">2</span>).multiply(<span class="number">2</span>).isEqualTo(num)).then(<span class="string">"even"</span>).otherwise(<span class="string">"odd"</span>);</span><br><span class="line">		System.out.println(num.get() + <span class="string">" is "</span> + desc.get());</span><br><span class="line">		num.set(<span class="number">19</span>);</span><br><span class="line">		System.out.println(num.get() + <span class="string">" is "</span> + desc.get());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-60fb60d4320dfd39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<h3 id="Binding-Utility-Class"><a href="#Binding-Utility-Class" class="headerlink" title="Binding Utility Class"></a>Binding Utility Class</h3><p>Bingdings 类中包含之前提及全部流式API(诸如add,sustract,multiply,divide,concat,eqaul 等等).如果你不喜欢用流式API的写法，也可以用通过调用Bindings的方法的来满足你创建所需的binding.<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">BindingsClassTest</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">		DoubleProperty radius = <span class="keyword">new</span> SimpleDoubleProperty(<span class="number">7.0</span>);</span><br><span class="line">		DoubleProperty area = <span class="keyword">new</span> SimpleDoubleProperty(<span class="number">0.0</span>);</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Bind area to an expression that computes the area of the circle</span></span><br><span class="line">		area.bind(Bindings.multiply(Bindings.multiply(radius, radius), Math.PI));</span><br><span class="line">		<span class="comment">// Create a string expression to describe the circle</span></span><br><span class="line">		StringExpression desc = Bindings.format(Locale.US, <span class="string">"Radius = %.2f, Area = %.2f"</span>, radius, area);</span><br><span class="line">		System.out.println(desc.get());</span><br><span class="line"></span><br><span class="line">		<span class="comment">// Change the radius</span></span><br><span class="line">		radius.set(<span class="number">14.0</span>);</span><br><span class="line">		System.out.println(desc.getValue());</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p><img src="http://upload-images.jianshu.io/upload_images/2053209-0ce42ae455652888.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paste_Image.png"></p>
-<hr>
-<h3 id="与UI-之间的binding"><a href="#与UI-之间的binding" class="headerlink" title="与UI 之间的binding"></a>与UI 之间的binding</h3><p>讲了这么多，如果你看过java fx 源码， 你猜到java fx 是如何实现UI 与 Model  的 data binding 吗？<br>其实java fx ui 类 的所有属性 基本上是 实现了property接口的对象。<br>比如 textField的textProperty,再比如<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ChoicBindingExample</span> <span class="keyword">extends</span> <span class="title">Application</span> </span>&#123;</span><br><span class="line">  ObservableList cursors = FXCollections.observableArrayList(</span><br><span class="line">  Cursor.DEFAULT,</span><br><span class="line">  Cursor.CROSSHAIR,</span><br><span class="line">  Cursor.WAIT,</span><br><span class="line">  Cursor.TEXT,</span><br><span class="line">  Cursor.HAND,</span><br><span class="line">  Cursor.MOVE,</span><br><span class="line">  Cursor.N_RESIZE,</span><br><span class="line">  Cursor.NE_RESIZE,</span><br><span class="line">  Cursor.E_RESIZE,</span><br><span class="line">  Cursor.SE_RESIZE,</span><br><span class="line">  Cursor.S_RESIZE,</span><br><span class="line">  Cursor.SW_RESIZE,</span><br><span class="line">  Cursor.W_RESIZE,</span><br><span class="line">  Cursor.NW_RESIZE,</span><br><span class="line">  Cursor.NONE</span><br><span class="line">); </span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">start</span><span class="params">(Stage stage)</span> </span>&#123;</span><br><span class="line">  ChoiceBox choiceBoxRef = ChoiceBoxBuilder.create()</span><br><span class="line">  .items(cursors)</span><br><span class="line">  .build();</span><br><span class="line">VBox box = <span class="keyword">new</span> VBox();</span><br><span class="line">box.getChildren().add(choiceBoxRef);</span><br><span class="line"><span class="keyword">final</span> Scene scene = <span class="keyword">new</span> Scene(box,<span class="number">300</span>, <span class="number">250</span>);</span><br><span class="line">scene.setFill(<span class="keyword">null</span>);</span><br><span class="line">stage.setScene(scene);</span><br><span class="line">stage.show();</span><br><span class="line">scene.cursorProperty().bind(choiceBoxRef.getSelectionModel().selectedItemProperty());</span><br><span class="line">&#125;</span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">launch(args);</span><br><span class="line">&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1710,7 +1631,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">15</span>
+                <span class="site-state-item-count">18</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

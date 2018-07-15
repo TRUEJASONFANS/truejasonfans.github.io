@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://truejasonfans.github.io/"/>
-  <updated>2018-06-30T16:01:32.511Z</updated>
+  <updated>2018-07-15T16:00:00.386Z</updated>
   <id>http://truejasonfans.github.io/</id>
   
   <author>
@@ -15,6 +15,74 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>AOP实践</title>
+    <link href="http://truejasonfans.github.io/2018/07/15/%E8%BF%90%E7%94%A8%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%81%9A%E6%8B%A6%E6%88%AA%E5%BC%8F%E6%A3%80%E6%B5%8B/"/>
+    <id>http://truejasonfans.github.io/2018/07/15/运用动态代理做拦截式检测/</id>
+    <published>2018-07-15T15:52:27.389Z</published>
+    <updated>2018-07-15T16:00:00.386Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入。</p><p>   根据织入的时期，可以分为以下几个时期</p><ul><li>编译前</li><li>编译后</li><li>装载后</li><li>运行期</li></ul><p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p><p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p><h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol><li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li><li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li></ol><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>AppClientProxyHandler 动态代理接口 AppClient 接口，对于applient 接口的调用都会被代理</p><p>增强的代码就是：</p><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p><ol><li>定义方法调用前回调对象</li></ol><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="2"><li>定义方法调用后回调对象</li></ol><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ol start="3"><li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li></ol><p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">=======</span><br><span class="line">```java</span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; <span class="number">7</span>d588e47c069b42212d767c507815f82be4b1ffc</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;AOP&quot;&gt;&lt;a href=&quot;#AOP&quot; class=&quot;headerlink&quot; title=&quot;AOP&quot;&gt;&lt;/a&gt;AOP&lt;/h2&gt;&lt;p&gt;   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，&lt;br&gt;也可以对构造函数，
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>组件状态管理</title>
+    <link href="http://truejasonfans.github.io/2018/07/15/%E7%BB%84%E4%BB%B6%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/"/>
+    <id>http://truejasonfans.github.io/2018/07/15/组件状态管理/</id>
+    <published>2018-07-15T15:52:27.389Z</published>
+    <updated>2018-07-15T16:00:35.088Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol><li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p></li><li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p></li><li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p></li></ol><h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure><p>UI.control.addListener(e-&gt; updateModel())</p><p>UI状态维护困难，UI难以复用。</p><h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p><p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p><ol><li><p>定义domain 均为property</p></li><li><p>view 与 viewModel 双向绑定</p></li><li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p></li><li><p>只有在通过property 达不到的情况下才使用event bus.</p></li><li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p></li><li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li></ol><p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p><h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol><li><p>通过相互领域模型的bind</p></li><li><p>event bus</p></li></ol><h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol><li><p>scene graph 上节点</p></li><li><p>event bus</p></li></ol><h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol><li>event bus</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;何谓组件和容器&quot;&gt;&lt;a href=&quot;#何谓组件和容器&quot; class=&quot;headerlink&quot; title=&quot;何谓组件和容器&quot;&gt;&lt;/a&gt;何谓组件和容器&lt;/h2&gt;&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。&lt;br&gt;可以理解纯组
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>vue笔记</title>
+    <link href="http://truejasonfans.github.io/2018/07/15/vue/"/>
+    <id>http://truejasonfans.github.io/2018/07/15/vue/</id>
+    <published>2018-07-15T14:33:40.722Z</published>
+    <updated>2018-07-15T15:59:01.050Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li>$代表vue暴露的实力属性与方法</li><li>@ 代表v-on 添建callback :代表v-bind添加双向绑定</li><li>computed基于依赖缓存和methods则不是</li><li>当computed需要定制的时候采用watch选项</li><li>data必须是一个函数，否则同类组件将共享状态</li><li>插槽用来向子组件传递内容</li><li></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;ol&gt;
+&lt;li&gt;$代表vue暴露的实力属性与方法&lt;/li&gt;
+&lt;li&gt;@ 代表v-on 添建callback :代表v-bind添加双向绑定&lt;/li&gt;
+&lt;li&gt;computed基于依赖缓存和methods则不是&lt;/li&gt;
+&lt;li&gt;当computed需要定制的时候采用watch选项
+      
+    
+    </summary>
+    
+    
+  </entry>
   
   <entry>
     <title></title>
@@ -109,29 +177,6 @@
   </entry>
   
   <entry>
-    <title>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</title>
-    <link href="http://truejasonfans.github.io/2017/09/18/Maven%E9%85%8D%E7%BD%AE/"/>
-    <id>http://truejasonfans.github.io/2017/09/18/Maven配置/</id>
-    <published>2017-09-17T16:23:02.000Z</published>
-    <updated>2018-04-01T13:06:40.079Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol><li>下载Maven binary </li><li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li><li><p>修改conf文件下setting.xml,设置为阿里源</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure></li><li><p>打开eclipse-&gt;preference-&gt;Maven</p></li><li>修改Installation，自己所装maven路径</li><li>修改User setting, 制定为设置阿里源的setting.xml</li><li>右键maven工程 -&gt; Maven-&gt; Update Project</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）&quot;&gt;&lt;a href=&quot;#Maven在eclipse的配置（解决Plugin
-      
-    
-    </summary>
-    
-    
-      <category term="java" scheme="http://truejasonfans.github.io/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
     <title>redux同步使用学习</title>
     <link href="http://truejasonfans.github.io/2017/09/18/redux%E5%90%8C%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/"/>
     <id>http://truejasonfans.github.io/2017/09/18/redux同步使用学习/</id>
@@ -151,6 +196,29 @@
     
     
       <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</title>
+    <link href="http://truejasonfans.github.io/2017/09/18/Maven%E9%85%8D%E7%BD%AE/"/>
+    <id>http://truejasonfans.github.io/2017/09/18/Maven配置/</id>
+    <published>2017-09-17T16:23:02.000Z</published>
+    <updated>2018-04-01T13:06:40.079Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol><li>下载Maven binary </li><li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li><li><p>修改conf文件下setting.xml,设置为阿里源</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure></li><li><p>打开eclipse-&gt;preference-&gt;Maven</p></li><li>修改Installation，自己所装maven路径</li><li>修改User setting, 制定为设置阿里源的setting.xml</li><li>右键maven工程 -&gt; Maven-&gt; Update Project</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）&quot;&gt;&lt;a href=&quot;#Maven在eclipse的配置（解决Plugin
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://truejasonfans.github.io/tags/java/"/>
     
   </entry>
   

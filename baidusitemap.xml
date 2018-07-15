@@ -4,6 +4,51 @@
 
     
   <url>
+    <loc>http://truejasonfans.github.io/2018/07/15/%E7%BB%84%E4%BB%B6%E7%8A%B6%E6%80%81%E7%AE%A1%E7%90%86/</loc>
+    <lastmod>2018-07-15T16:00:35.088Z</lastmod>
+    <data>
+        <display>
+        <title>组件状态管理</title>
+        <pubTime>2018-07-15T15:52:27.389Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://truejasonfans.github.io/2018/07/15/%E8%BF%90%E7%94%A8%E5%8A%A8%E6%80%81%E4%BB%A3%E7%90%86%E5%81%9A%E6%8B%A6%E6%88%AA%E5%BC%8F%E6%A3%80%E6%B5%8B/</loc>
+    <lastmod>2018-07-15T16:00:00.386Z</lastmod>
+    <data>
+        <display>
+        <title>AOP实践</title>
+        <pubTime>2018-07-15T15:52:27.389Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
+    <loc>http://truejasonfans.github.io/2018/07/15/vue/</loc>
+    <lastmod>2018-07-15T15:59:01.050Z</lastmod>
+    <data>
+        <display>
+        <title>vue笔记</title>
+        <pubTime>2018-07-15T14:33:40.722Z</pubTime>
+        
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://truejasonfans.github.io/2018/06/30/nginx/</loc>
     <lastmod>2018-06-30T16:01:32.511Z</lastmod>
     <data>
@@ -74,6 +119,23 @@
 
     
   <url>
+    <loc>http://truejasonfans.github.io/2017/09/18/redux%E5%90%8C%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/</loc>
+    <lastmod>2018-04-01T13:06:40.078Z</lastmod>
+    <data>
+        <display>
+        <title>redux同步使用学习</title>
+        <pubTime>2017-09-17T16:23:02.000Z</pubTime>
+        
+        <tag>Web前端</tag>
+         
+         
+           
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://truejasonfans.github.io/2016/12/18/java-fx-binding/</loc>
     <lastmod>2018-04-01T13:06:40.078Z</lastmod>
     <data>
@@ -114,12 +176,12 @@
 
     
   <url>
-    <loc>http://truejasonfans.github.io/2017/09/18/redux%E5%90%8C%E6%AD%A5%E4%BD%BF%E7%94%A8%E5%AD%A6%E4%B9%A0/</loc>
-    <lastmod>2018-04-01T13:06:40.078Z</lastmod>
+    <loc>http://truejasonfans.github.io/2017/06/14/webpack-manual/</loc>
+    <lastmod>2018-04-01T13:06:40.077Z</lastmod>
     <data>
         <display>
-        <title>redux同步使用学习</title>
-        <pubTime>2017-09-17T16:23:02.000Z</pubTime>
+        <title>如何使用webpack构建单页面React应用</title>
+        <pubTime>2017-06-13T16:00:58.000Z</pubTime>
         
         <tag>Web前端</tag>
          
@@ -171,17 +233,20 @@
 
     
   <url>
-    <loc>http://truejasonfans.github.io/2017/06/14/webpack-manual/</loc>
-    <lastmod>2018-04-01T13:06:40.077Z</lastmod>
+    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-css/</loc>
+    <lastmod>2018-04-01T13:06:40.076Z</lastmod>
     <data>
         <display>
-        <title>如何使用webpack构建单页面React应用</title>
-        <pubTime>2017-06-13T16:00:58.000Z</pubTime>
+        <title>java_fx_css</title>
+        <pubTime>2016-12-18T14:26:48.000Z</pubTime>
         
-        <tag>Web前端</tag>
+        <tag>java_fx</tag>
          
          
            
+             
+              <breadCrumb title="java_fx" url="http://truejasonfans.github.io/categories/java-fx/"/>
+          
         </display>
     </data>
     </url>
@@ -199,26 +264,6 @@
          
          
            
-        </display>
-    </data>
-    </url>
-
-    
-  <url>
-    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-css/</loc>
-    <lastmod>2018-04-01T13:06:40.076Z</lastmod>
-    <data>
-        <display>
-        <title>java_fx_css</title>
-        <pubTime>2016-12-18T14:26:48.000Z</pubTime>
-        
-        <tag>java_fx</tag>
-         
-         
-           
-             
-              <breadCrumb title="java_fx" url="http://truejasonfans.github.io/categories/java-fx/"/>
-          
         </display>
     </data>
     </url>

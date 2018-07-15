@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="zhong-wei" />
 
 
 
@@ -95,18 +95,19 @@
 
 
 
-<meta name="description" content="jvm的堆内存模型，  jvm 堆 = 年轻代 + 持久代 + 年老代 年轻代的组成(young generation) : 一个Eden区,两个Survivor区(from 和 to 区）。 通常情况下，一个新产生的对象会被分配在Eden区，在这里当Eden区发生一次minor gc(发生在新生代的gc，我个人理解应该是对主要是对Eden的gc，当然如果to 区满了以后也会触发），对象就会从Ed">
-<meta name="keywords" content="java">
+<meta name="description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JVM的一些理解总结">
-<meta property="og:url" content="http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/index.html">
+<meta property="og:title" content="组件状态管理">
+<meta property="og:url" content="http://truejasonfans.github.io/2018/07/15/组件状态管理/index.html">
 <meta property="og:site_name" content="Leisure Moment">
-<meta property="og:description" content="jvm的堆内存模型，  jvm 堆 = 年轻代 + 持久代 + 年老代 年轻代的组成(young generation) : 一个Eden区,两个Survivor区(from 和 to 区）。 通常情况下，一个新产生的对象会被分配在Eden区，在这里当Eden区发生一次minor gc(发生在新生代的gc，我个人理解应该是对主要是对Eden的gc，当然如果to 区满了以后也会触发），对象就会从Ed">
+<meta property="og:description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-04-01T13:06:40.077Z">
+<meta property="og:image" content="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png">
+<meta property="og:updated_time" content="2018-07-15T16:00:35.088Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="JVM的一些理解总结">
-<meta name="twitter:description" content="jvm的堆内存模型，  jvm 堆 = 年轻代 + 持久代 + 年老代 年轻代的组成(young generation) : 一个Eden区,两个Survivor区(from 和 to 区）。 通常情况下，一个新产生的对象会被分配在Eden区，在这里当Eden区发生一次minor gc(发生在新生代的gc，我个人理解应该是对主要是对Eden的gc，当然如果to 区满了以后也会触发），对象就会从Ed">
+<meta name="twitter:title" content="组件状态管理">
+<meta name="twitter:description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
+<meta name="twitter:image" content="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png">
 
 
 
@@ -134,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/"/>
+  <link rel="canonical" href="http://truejasonfans.github.io/2018/07/15/组件状态管理/"/>
 
 
 
 
 
-  <title>JVM的一些理解总结 | Leisure Moment</title>
+  <title>组件状态管理 | Leisure Moment</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -280,7 +281,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/组件状态管理/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -297,7 +298,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">JVM的一些理解总结</h1>
+          <h1 class="post-title" itemprop="name headline">组件状态管理</h1>
         
 
         <div class="post-meta">
@@ -309,8 +310,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-06-09T23:15:03+08:00">
-                2016-06-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T23:52:27+08:00">
+                2018-07-15
               </time>
             
 
@@ -319,28 +320,6 @@
             
           </span>
 
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/java/" itemprop="url" rel="index">
-                    <span itemprop="name">java</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
           
 
           
@@ -366,10 +345,48 @@
       
 
       
-        <p>jvm的<strong>堆内存模型</strong>，</p>
-<p> jvm 堆 = 年轻代 + 持久代 + 年老代</p>
-<p>年轻代的组成(young generation) : 一个Eden区,两个Survivor区(from 和 to 区）。</p>
-<p>通常情况下，一个新产生的对象会被分配在Eden区，在这里当Eden区发生一次minor gc(发生在新生代的gc，我个人理解应该是对主要是对Eden的gc，当然如果to 区满了以后也会触发），对象就会从Eden区移动到from区,刚开始的时候to区是空的， 之后的gc，Eden区存活下来的对象会被移动到”to“区，然后”From区”根据年龄来决定去向，到达的年龄的去往老年代（长达成人），然后其余的全部赶往”to”区. 这次gc后Eden区和from区将会被清空，之后 “to”区 将会和“from”交换，这样下次gc的时候，”to”区就空了。这种基于复制收集的算法不会产生内存碎片。</p>
+        <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
+</li>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
+</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
+</ol>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
+</ol>
 
       
     </div>
@@ -397,12 +414,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/java/" rel="tag"># java</a>
-          
-        </div>
-      
 
       
       
@@ -412,8 +423,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/05/26/hexo-01/" rel="next" title="第一篇杂记吧">
-                <i class="fa fa-chevron-left"></i> 第一篇杂记吧
+              <a href="/2018/07/15/vue/" rel="next" title="vue笔记">
+                <i class="fa fa-chevron-left"></i> vue笔记
               </a>
             
           </div>
@@ -422,8 +433,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2016/06/22/数据库范式/" rel="prev" title="数据库范式">
-                数据库范式 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/07/15/运用动态代理做拦截式检测/" rel="prev" title="AOP实践">
+                AOP实践 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -471,8 +482,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            Overview
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel sidebar-panel-active">
+      <section class="site-overview sidebar-panel">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
                src="/uploads/kakaxi.jpg"
@@ -541,6 +561,22 @@
 
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#何谓组件和容器"><span class="nav-number">1.</span> <span class="nav-text">何谓组件和容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无状态管理-MV"><span class="nav-number">2.</span> <span class="nav-text">无状态管理 (MV)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binding机制view-model-MVVM"><span class="nav-number">3.</span> <span class="nav-text">Binding机制view model (MVVM)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-fx中一切变化皆表现为property的变化"><span class="nav-number">3.1.</span> <span class="nav-text">java fx中一切变化皆表现为property的变化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件间通信"><span class="nav-number">4.</span> <span class="nav-text">组件间通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#父子组件通信"><span class="nav-number">4.1.</span> <span class="nav-text">父子组件通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旁系组件通信"><span class="nav-number">4.2.</span> <span class="nav-text">旁系组件通信</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
