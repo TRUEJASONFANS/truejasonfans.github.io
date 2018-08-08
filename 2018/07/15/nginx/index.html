@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="java," />
+  <meta name="keywords" content="zhong-wei" />
 
 
 
@@ -95,18 +95,17 @@
 
 
 
-<meta name="description" content="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl） 下载Maven binary  设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量 修改conf文件下setting.xml,设置为阿里源 12345678&amp;lt;mirrors&amp;gt;">
-<meta name="keywords" content="java">
+<meta name="description" content="安装brew install nginx 命令集 启动 nginx   配置nginx -t 找到配置文件的位置">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）">
-<meta property="og:url" content="http://truejasonfans.github.io/2017/09/18/Maven配置/index.html">
+<meta property="og:title" content="Leisure Moment">
+<meta property="og:url" content="http://truejasonfans.github.io/2018/07/15/nginx/index.html">
 <meta property="og:site_name" content="Leisure Moment">
-<meta property="og:description" content="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl） 下载Maven binary  设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量 修改conf文件下setting.xml,设置为阿里源 12345678&amp;lt;mirrors&amp;gt;">
+<meta property="og:description" content="安装brew install nginx 命令集 启动 nginx   配置nginx -t 找到配置文件的位置">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-04-01T13:06:40.079Z">
+<meta property="og:updated_time" content="2018-07-15T15:53:07.096Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）">
-<meta name="twitter:description" content="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl） 下载Maven binary  设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量 修改conf文件下setting.xml,设置为阿里源 12345678&amp;lt;mirrors&amp;gt;">
+<meta name="twitter:title" content="Leisure Moment">
+<meta name="twitter:description" content="安装brew install nginx 命令集 启动 nginx   配置nginx -t 找到配置文件的位置">
 
 
 
@@ -134,13 +133,13 @@
 
 
 
-  <link rel="canonical" href="http://truejasonfans.github.io/2017/09/18/Maven配置/"/>
+  <link rel="canonical" href="http://truejasonfans.github.io/2018/07/15/nginx/"/>
 
 
 
 
 
-  <title>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl） | Leisure Moment</title>
+  <title> | Leisure Moment</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -280,7 +279,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/Maven配置/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -297,7 +296,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</h1>
+          <h1 class="post-title" itemprop="name headline"></h1>
         
 
         <div class="post-meta">
@@ -309,8 +308,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
-                2017-09-18
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T23:53:07+08:00">
+                2018-07-15
               </time>
             
 
@@ -344,18 +343,12 @@
       
 
       
-        <h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol>
-<li>下载Maven binary </li>
-<li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li>
-<li><p>修改conf文件下setting.xml,设置为阿里源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">		&lt;mirror&gt;</span><br><span class="line">    	  &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    	  &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    	  &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">    	  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    	&lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打开eclipse-&gt;preference-&gt;Maven</p>
-</li>
-<li>修改Installation，自己所装maven路径</li>
-<li>修改User setting, 制定为设置阿里源的setting.xml</li>
-<li>右键maven工程 -&gt; Maven-&gt; Update Project</li>
+        <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>brew install nginx</p>
+<h1 id="命令集"><a href="#命令集" class="headerlink" title="命令集"></a>命令集</h1><ol>
+<li>启动 nginx</li>
+<li></li>
 </ol>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>nginx -t 找到配置文件的位置</p>
 
       
     </div>
@@ -383,12 +376,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/java/" rel="tag"># java</a>
-          
-        </div>
-      
 
       
       
@@ -398,8 +385,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2017/09/18/redux同步使用学习/" rel="next" title="redux同步使用学习">
-                <i class="fa fa-chevron-left"></i> redux同步使用学习
+              <a href="/2018/07/15/运用动态代理做拦截式检测/" rel="next" title="AOP实践">
+                <i class="fa fa-chevron-left"></i> AOP实践
               </a>
             
           </div>
@@ -407,10 +394,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2017/12/24/frontQuestions/" rel="prev" title="前端学习中的困惑">
-                前端学习中的困惑 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -546,7 +529,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><span class="nav-number">1.</span> <span class="nav-text">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#命令集"><span class="nav-number">2.</span> <span class="nav-text">命令集</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#配置"><span class="nav-number">3.</span> <span class="nav-text">配置</span></a></li></ol></div>
             
 
           </div>

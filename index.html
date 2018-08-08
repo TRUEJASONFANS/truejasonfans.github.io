@@ -277,6 +277,123 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/nginx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/07/15/nginx/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-07-15T23:53:07+08:00">
+                2018-07-15
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>brew install nginx</p>
+<h1 id="命令集"><a href="#命令集" class="headerlink" title="命令集"></a>命令集</h1><ol>
+<li>启动 nginx</li>
+<li></li>
+</ol>
+<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>nginx -t 找到配置文件的位置</p>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/07/15/运用动态代理做拦截式检测/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -360,22 +477,29 @@
 <li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>AppClientProxyHandler 动态代理接口 AppClient 接口，对于applient 接口的调用都会被代理</p>
+<p>AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理</p>
 <p>增强的代码就是：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>增强目的：重复使用pool中“可贵“资源RpcConnection</p>
 <h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
 <ol>
-<li>定义方法调用前回调对象</li>
+<li>定义方法调用前回调对象<br>在dao真正调用前进行”版本检测”</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="2">
-<li>定义方法调用后回调对象</li>
+<li>定义方法调用后回调对象<br>在dao完成写操作后，进行“写版本”操作</li>
 </ol>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <ol start="3">
 <li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
 </ol>
-<p>&lt;&lt;&lt;&lt;&lt;&lt;&lt; HEAD<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">=======</span><br><span class="line">```java</span><br><span class="line">&gt;&gt;&gt;&gt;&gt;&gt;&gt; <span class="number">7</span>d588e47c069b42212d767c507815f82be4b1ffc</span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AOP编程思想"><a href="#AOP编程思想" class="headerlink" title="AOP编程思想"></a>AOP编程思想</h3><p>OOP的有效补充（引用于知乎）</p>
+<ul>
+<li>面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。</li>
+<li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
+<li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
+</ul>
 
           
         
@@ -649,123 +773,6 @@
 <li>插槽用来向子组件传递内容</li>
 <li></li>
 </ol>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/06/30/nginx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/06/30/nginx/" itemprop="url">Untitled</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-06-30T23:56:09+08:00">
-                2018-06-30
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>brew install nginx</p>
-<h1 id="命令集"><a href="#命令集" class="headerlink" title="命令集"></a>命令集</h1><ol>
-<li>启动 nginx</li>
-<li></li>
-</ol>
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>nginx -t 找到配置文件的位置</p>
 
           
         
@@ -1166,6 +1173,129 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/Maven配置/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2017/09/18/Maven配置/" itemprop="url">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
+                2017-09-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol>
+<li>下载Maven binary </li>
+<li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li>
+<li><p>修改conf文件下setting.xml,设置为阿里源</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">		&lt;mirror&gt;</span><br><span class="line">    	  &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    	  &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    	  &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">    	  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    	&lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>打开eclipse-&gt;preference-&gt;Maven</p>
+</li>
+<li>修改Installation，自己所装maven路径</li>
+<li>修改User setting, 制定为设置阿里源的setting.xml</li>
+<li>右键maven工程 -&gt; Maven-&gt; Update Project</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/redux同步使用学习/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1288,129 +1418,6 @@
 <hr>
 <h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><hr>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Provider, connect &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// React component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; value, onIncreaseClick &#125; = <span class="keyword">this</span>.props</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;&#123;value&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;onIncreaseClick&#125;&gt;Increase&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Counter.propTypes = &#123;</span></span><br><span class="line"><span class="regexp">  value: PropTypes.number.isRequired,</span></span><br><span class="line"><span class="regexp">  onIncreaseClick: PropTypes.func.isRequired</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Action</span></span><br><span class="line"><span class="regexp">const increaseAction = &#123; type: 'increase' &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Reducer</span></span><br><span class="line"><span class="regexp">function counter(state = &#123; count: 0 &#125;, action) &#123;</span></span><br><span class="line"><span class="regexp">  const count = state.count</span></span><br><span class="line"><span class="regexp">  switch (action.type) &#123;</span></span><br><span class="line"><span class="regexp">    case 'increase':</span></span><br><span class="line"><span class="regexp">      return &#123; count: count + 1 &#125;</span></span><br><span class="line"><span class="regexp">    default:</span></span><br><span class="line"><span class="regexp">      return state</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Store</span></span><br><span class="line"><span class="regexp">const store = createStore(counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux state to component props</span></span><br><span class="line"><span class="regexp">function mapStateToProps(state) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    value: state.count</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux actions to component props</span></span><br><span class="line"><span class="regexp">function mapDispatchToProps(dispatch) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    onIncreaseClick: () =&gt; dispatch(increaseAction)</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Connected Component</span></span><br><span class="line"><span class="regexp">const App = connect(</span></span><br><span class="line"><span class="regexp">  mapStateToProps,</span></span><br><span class="line"><span class="regexp">  mapDispatchToProps</span></span><br><span class="line"><span class="regexp">)(Counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">ReactDOM.render(</span></span><br><span class="line"><span class="regexp">  &lt;Provider store=&#123;store&#125;&gt;</span></span><br><span class="line"><span class="regexp">    &lt;App /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/Maven配置/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/18/Maven配置/" itemprop="url">Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
-                2017-09-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol>
-<li>下载Maven binary </li>
-<li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li>
-<li><p>修改conf文件下setting.xml,设置为阿里源</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">		&lt;mirror&gt;</span><br><span class="line">    	  &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">    	  &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">    	  &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">    	  &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    	&lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure>
-</li>
-<li><p>打开eclipse-&gt;preference-&gt;Maven</p>
-</li>
-<li>修改Installation，自己所装maven路径</li>
-<li>修改User setting, 制定为设置阿里源的setting.xml</li>
-<li>右键maven工程 -&gt; Maven-&gt; Update Project</li>
-</ol>
-
           
         
       
