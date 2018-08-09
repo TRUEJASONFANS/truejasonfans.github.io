@@ -1,7 +1,10 @@
+---
+title: AOP实践
+---
 ## AOP
 
    面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，
-也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入。
+也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入,也就是运行期进行织入。
 
    根据织入的时期，可以分为以下几个时期
 
@@ -37,7 +40,7 @@ class AppClientProxyHandler implements InvocationHandler {
 }
 
 ```
-AppClientProxyHandler 动态代理接口 AppClient 接口，对于applient 接口的调用都会被代理
+AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理
 
 增强的代码就是：
 
@@ -57,6 +60,7 @@ RpcConnection<D4cRpcClient, CommD4cService.Client> conn = pool.getAvailableConnn
    	pool.pushBack(conn);
 }
 ```
+增强目的：重复使用pool中“可贵“资源RpcConnection
 
 ### 基于CGLib方案
 
@@ -64,6 +68,7 @@ RpcConnection<D4cRpcClient, CommD4cService.Client> conn = pool.getAvailableConnn
 事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。
 
  1. 定义方法调用前回调对象
+在dao真正调用前进行"版本检测"
 
 ``` java
 public class VersionCheckHandler implements MethodInterceptor {
@@ -77,6 +82,7 @@ public class VersionCheckHandler implements MethodInterceptor {
 
 ```
  2. 定义方法调用后回调对象
+ 在dao完成写操作后，进行“写版本”操作
 
 ```java
 public class VersionSaveHandler implements MethodInterceptor {
@@ -90,11 +96,7 @@ public class VersionSaveHandler implements MethodInterceptor {
 ```
  3. 对于原来的DAO进行"代理"增强, 生成新的DAO 对象：
 
-<<<<<<< HEAD
 ``` java
-=======
-```java
->>>>>>> 7d588e47c069b42212d767c507815f82be4b1ffc
 public class ProxyFactory {
    public static <T> T getProxy(T targetObject, List<MethodInterceptor> handlers, CallbackFilter filter) {
     if (!handlers.isEmpty()) {
@@ -115,3 +117,10 @@ public class ProxyFactory {
   }
 }
 ```
+### AOP编程思想
+OOP的有效补充（引用于知乎）
+* 面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。
+* 而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 
+* AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。
+
+
