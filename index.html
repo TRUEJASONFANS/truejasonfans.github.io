@@ -277,6 +277,126 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/09/09/Run-GUI-MAC-DOCKER/" itemprop="url">如何在mac的docker上运行GUI程序</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-09T12:30:17+08:00">
+                2018-09-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="如何在mac的docker上运行GUI程序"><a href="#如何在mac的docker上运行GUI程序" class="headerlink" title="如何在mac的docker上运行GUI程序"></a>如何在mac的docker上运行GUI程序</h2><ol>
+<li><p>提供mac 上本身不带有X window system support, 需要安装<br>XQuartz以提供支持。<br>推荐安装方法 brew cask install xquartz</p>
+</li>
+<li><p>配置Xquartz security: enable the connection from network port</p>
+</li>
+<li>配置Xhost（配置X host端）<br>IP=$(ifconfig en0 | grep inet | awk ‘$1==”inet” {print $2}’)<br>shell&gt;&gt; xhost + $IP</li>
+<li>以-e 参数启动一个容器<br>docker run -t -i -e DISPLAY=$IP:0 hasedon/centos6.5 /bin/bash</li>
+<li>在该容器中便可以运行gui程序了。</li>
+</ol>
+
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1451,144 +1571,6 @@
 
 
     
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/06/14/webpack-manual/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/06/14/webpack-manual/" itemprop="url">如何使用webpack构建单页面React应用</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-06-14T00:00:58+08:00">
-                2017-06-14
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="entry"><a href="#entry" class="headerlink" title="entry"></a>entry</h2><p>打包的入口文件，有几个入口文件就会生成几个bundle文件</p>
-<h2 id="output"><a href="#output" class="headerlink" title="output"></a>output</h2><p>打包后的输出设置<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">output = &#123;</span><br><span class="line">  fileName : [XXX].js // 打包后的文件名</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h2 id="loader"><a href="#loader" class="headerlink" title="loader"></a>loader</h2><p>打包之前的预处理器，处理各种资源文件</p>
-<h3 id="css-loader-amp-style-loader"><a href="#css-loader-amp-style-loader" class="headerlink" title="css loader&amp; style  loader"></a>css loader&amp; style  loader</h3><ul>
-<li>css loader 负责解析css文件</li>
-<li>style loader 负责将css style插入到html中</li>
-</ul>
-<p>如何在webpack打包中包括css打包?</p>
-<ol>
-<li><p><code>loaders:[
-{ test: /\.css$/, loader: &#39;style-loader!css-loader&#39; },</code><br>]</p>
-</li>
-<li><p>以及在root.js中import/require<br><code>require(&#39;../css/app.css&#39;);</code></p>
-</li>
-</ol>
-<p>语法中的！（感叹号）用来连接link 不同的loader</p>
-<ul>
-<li>url loader 预处理图片资源<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">loaders:[</span><br><span class="line"> &#123; test: /\.(png|jpg)$/, loader: &apos;url-loader?limit=8192&apos; &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
-</li>
-</ul>
-<p>? 用来向loader传入参数，这里表示8192以下用base64转码</p>
-<h3 id="Common-chunk"><a href="#Common-chunk" class="headerlink" title="Common chunk"></a>Common chunk</h3><p>CommonsChunkPlugin<br>将脚本中相同chunk块打包成一个单独的文件的插件</p>
-<h3 id="Webpack配置文件中用到的特殊符号"><a href="#Webpack配置文件中用到的特殊符号" class="headerlink" title="Webpack配置文件中用到的特殊符号"></a>Webpack配置文件中用到的特殊符号</h3><p> ! : loader的连接符号 比如 ‘style-loader!css-loader’</p>
-<p> &amp; : 向loader传递参数</p>
-<h4 id="解决：Cannot-find-module-‘webpack-lib-node-NodeTemplatePlugin"><a href="#解决：Cannot-find-module-‘webpack-lib-node-NodeTemplatePlugin" class="headerlink" title="解决：Cannot find module ‘webpack/lib/node/NodeTemplatePlugin"></a>解决：Cannot find module ‘webpack/lib/node/NodeTemplatePlugin</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">npm remove webpack -g</span><br><span class="line">npm i webpack --save-dev</span><br><span class="line">npm run ./node_modules/.bin/webpack</span><br></pre></td></tr></table></figure>
-<p>一个参考模板：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">var webpack = require(&quot;webpack&quot;);</span><br><span class="line">var path = require(&quot;path&quot;);</span><br><span class="line">var HtmlWebpackPlugin = require(&quot;html-webpack-plugin&quot;);</span><br><span class="line">module.exports = &#123;</span><br><span class="line">  context: path.join(__dirname),</span><br><span class="line">  entry: &quot;./src/js/root.js&quot;,</span><br><span class="line">  module: &#123;</span><br><span class="line">    loaders: [</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.js?$/,</span><br><span class="line">        exclude: /(node_modules)/,</span><br><span class="line">        loader: &quot;babel-loader&quot;,</span><br><span class="line">        query: &#123;</span><br><span class="line">          presets: [&quot;react&quot;, &quot;es2015&quot;, &quot;stage-0&quot;],</span><br><span class="line">          plugins: [&quot;react-html-attrs&quot;] </span><br><span class="line">        &#125;</span><br><span class="line">      &#125;,</span><br><span class="line">      &#123; test: /\.css$/, loader: &quot;style-loader!css-loader&quot; &#125;,</span><br><span class="line">      &#123;</span><br><span class="line">        test: /\.(png|jpg|jpeg)$/,</span><br><span class="line">        loader: &quot;url-loader?limit=8192&quot;,</span><br><span class="line">        use: [&quot;file-loader&quot;]</span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  entry: &#123;</span><br><span class="line">    app: path.resolve(__dirname, &quot;./src/js/root.js&quot;)</span><br><span class="line">  &#125;,</span><br><span class="line">  output: &#123;</span><br><span class="line">    path: path.resolve(__dirname, &quot;./dist&quot;),</span><br><span class="line">    filename: &quot;./src/bundle.js&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  plugins: [</span><br><span class="line">    new webpack.optimize.DedupePlugin(),</span><br><span class="line">    new webpack.optimize.OccurenceOrderPlugin(),</span><br><span class="line">    new webpack.optimize.UglifyJsPlugin(&#123; mangle: false, sourcemap: false &#125;),</span><br><span class="line">    new HtmlWebpackPlugin(&#123;</span><br><span class="line">      title: &quot;resume-system-front&quot;,</span><br><span class="line">      filename: &quot;app.html&quot;,</span><br><span class="line">      template: &quot;./index.html&quot; //Load a custom template</span><br><span class="line">    &#125;)</span><br><span class="line">  ]</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
   </section>
 
   
@@ -1638,7 +1620,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">18</span>
+                <span class="site-state-item-count">19</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1660,7 +1642,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">7</span>
+                <span class="site-state-item-count">8</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>

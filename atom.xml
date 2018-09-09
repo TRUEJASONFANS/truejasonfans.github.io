@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://truejasonfans.github.io/"/>
-  <updated>2018-08-09T15:26:07.516Z</updated>
+  <updated>2018-09-09T04:32:43.364Z</updated>
   <id>http://truejasonfans.github.io/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>如何在mac的docker上运行GUI程序</title>
+    <link href="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/"/>
+    <id>http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/</id>
+    <published>2018-09-09T04:30:17.000Z</published>
+    <updated>2018-09-09T04:32:43.364Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="如何在mac的docker上运行GUI程序"><a href="#如何在mac的docker上运行GUI程序" class="headerlink" title="如何在mac的docker上运行GUI程序"></a>如何在mac的docker上运行GUI程序</h2><ol><li><p>提供mac 上本身不带有X window system support, 需要安装<br>XQuartz以提供支持。<br>推荐安装方法 brew cask install xquartz</p></li><li><p>配置Xquartz security: enable the connection from network port</p></li><li>配置Xhost（配置X host端）<br>IP=$(ifconfig en0 | grep inet | awk ‘$1==”inet” {print $2}’)<br>shell&gt;&gt; xhost + $IP</li><li>以-e 参数启动一个容器<br>docker run -t -i -e DISPLAY=$IP:0 hasedon/centos6.5 /bin/bash</li><li>在该容器中便可以运行gui程序了。</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;如何在mac的docker上运行GUI程序&quot;&gt;&lt;a href=&quot;#如何在mac的docker上运行GUI程序&quot; class=&quot;headerlink&quot; title=&quot;如何在mac的docker上运行GUI程序&quot;&gt;&lt;/a&gt;如何在mac的docker上运行GUI程序&lt;/
+      
+    
+    </summary>
+    
+    
+      <category term="docker" scheme="http://truejasonfans.github.io/tags/docker/"/>
+    
+  </entry>
   
   <entry>
     <title>nginx</title>
