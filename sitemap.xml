@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://truejasonfans.github.io/2018/09/23/java_fx_render_system_arch/</loc>
+    
+    <lastmod>2018-09-23T14:33:15.194Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/</loc>
     
     <lastmod>2018-09-09T04:32:43.364Z</lastmod>
@@ -30,14 +37,14 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/tags/index.html</loc>
+    <loc>http://truejasonfans.github.io/about/index.html</loc>
     
     <lastmod>2018-08-09T15:21:59.643Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/about/index.html</loc>
+    <loc>http://truejasonfans.github.io/tags/index.html</loc>
     
     <lastmod>2018-08-09T15:21:59.643Z</lastmod>
     
@@ -58,14 +65,14 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-binding/</loc>
+    <loc>http://truejasonfans.github.io/2016/05/26/hexo-01/</loc>
     
     <lastmod>2018-08-09T15:21:59.639Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2016/05/26/hexo-01/</loc>
+    <loc>http://truejasonfans.github.io/2016/12/18/java-fx-binding/</loc>
     
     <lastmod>2018-08-09T15:21:59.639Z</lastmod>
     
@@ -135,13 +142,6 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2017/09/18/redux_learn/</loc>
-    
-    <lastmod>2018-08-09T15:21:59.632Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://truejasonfans.github.io/2016/10/18/instructions-of-hexo/</loc>
     
     <lastmod>2018-08-09T15:21:59.632Z</lastmod>
@@ -149,14 +149,21 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2018/04/02/deploy-flask-on-mac-0/</loc>
+    <loc>http://truejasonfans.github.io/2017/09/18/redux_learn/</loc>
+    
+    <lastmod>2018-08-09T15:21:59.632Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://truejasonfans.github.io/2017/12/24/frontQuestions/</loc>
     
     <lastmod>2018-08-09T15:21:59.631Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2017/12/24/frontQuestions/</loc>
+    <loc>http://truejasonfans.github.io/2018/04/02/deploy-flask-on-mac-0/</loc>
     
     <lastmod>2018-08-09T15:21:59.631Z</lastmod>
     

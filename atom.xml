@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://truejasonfans.github.io/"/>
-  <updated>2018-09-09T04:32:43.364Z</updated>
+  <updated>2018-09-23T14:33:15.194Z</updated>
   <id>http://truejasonfans.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Javafx渲染系统架构</title>
+    <link href="http://truejasonfans.github.io/2018/09/23/java_fx_render_system_arch/"/>
+    <id>http://truejasonfans.github.io/2018/09/23/java_fx_render_system_arch/</id>
+    <published>2018-09-23T10:00:00.000Z</published>
+    <updated>2018-09-23T14:33:15.194Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="Open-GL"><a href="#Open-GL" class="headerlink" title="Open GL"></a>Open GL</h2><p>底层图形库实现标准<br>我们可以用它来实现基本的2D，3D图形</p><h2 id="JavaFx-架构"><a href="#JavaFx-架构" class="headerlink" title="JavaFx 架构"></a>JavaFx 架构</h2><p><img src="https://docs.oracle.com/javafx/2/architecture/img/jfxar_dt_001_arch-diag.png" alt=""><br>Prism是它的渲染引擎， 它可以基于java2d, OpenGL, D3D.</p><ol><li>D3D(Windows 下的图形编程接口，属于DirectX的一部分)</li><li>liniux下默认使用OpenGL</li><li>当硬件不支持时候，基于Java2d渲染。几乎所有jre已经提供了java2d的支持</li></ol><h2 id="Java-binding-for-Open-GL-API"><a href="#Java-binding-for-Open-GL-API" class="headerlink" title="Java binding for Open GL API"></a>Java binding for Open GL API</h2><ol><li>JOGL 关注2d,3d渲染 不关注sound和input-output</li><li>LWJGL limit support for AWT/Swings</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;Open-GL&quot;&gt;&lt;a href=&quot;#Open-GL&quot; class=&quot;headerlink&quot; title=&quot;Open GL&quot;&gt;&lt;/a&gt;Open GL&lt;/h2&gt;&lt;p&gt;底层图形库实现标准&lt;br&gt;我们可以用它来实现基本的2D，3D图形&lt;/p&gt;
+&lt;h2 id=&quot;JavaF
+      
+    
+    </summary>
+    
+    
+      <category term="javafx" scheme="http://truejasonfans.github.io/tags/javafx/"/>
+    
+  </entry>
   
   <entry>
     <title>如何在mac的docker上运行GUI程序</title>
