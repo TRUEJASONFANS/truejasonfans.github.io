@@ -45,24 +45,7 @@ function counter(state = { count: 0 }, action) {
 	      return state
 	}
 }
-
 export default todos
-```
-
-## 合成reducer 讲多个reducer合并以方便传入
-
-```js
-import { combineReducers } from 'redux'
-import todos from './todos'
-import visibilityFilter from './visibilityFilter'
-
-const todoApp = combineReducers({
-  todos,
-  visibilityFilter
-})
-
-export default todoApp
-
 ```
 # Store 
 状态树, 状态的“数据库”，
