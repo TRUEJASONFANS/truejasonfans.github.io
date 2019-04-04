@@ -77,7 +77,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="docker," />
+  <meta name="keywords" content="zhong-wei" />
 
 
 
@@ -95,18 +95,19 @@
 
 
 
-<meta name="description" content="如何在mac的docker上运行GUI程序 提供mac 上本身不带有X window system support, 需要安装XQuartz以提供支持。推荐安装方法 brew cask install xquartz  配置Xquartz security: enable the connection from network port  配置Xhost（配置X host端）IP=$(ifconf">
-<meta name="keywords" content="docker">
+<meta name="description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
 <meta property="og:type" content="article">
-<meta property="og:title" content="如何在mac的docker上运行GUI程序">
-<meta property="og:url" content="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/index.html">
+<meta property="og:title" content="组件状态管理">
+<meta property="og:url" content="http://truejasonfans.github.io/2019/04/05/component_state/index.html">
 <meta property="og:site_name" content="Leisure Moment">
-<meta property="og:description" content="如何在mac的docker上运行GUI程序 提供mac 上本身不带有X window system support, 需要安装XQuartz以提供支持。推荐安装方法 brew cask install xquartz  配置Xquartz security: enable the connection from network port  配置Xhost（配置X host端）IP=$(ifconf">
+<meta property="og:description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2018-09-09T04:32:43.364Z">
+<meta property="og:image" content="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png">
+<meta property="og:updated_time" content="2019-04-04T17:35:17.247Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="如何在mac的docker上运行GUI程序">
-<meta name="twitter:description" content="如何在mac的docker上运行GUI程序 提供mac 上本身不带有X window system support, 需要安装XQuartz以提供支持。推荐安装方法 brew cask install xquartz  配置Xquartz security: enable the connection from network port  配置Xhost（配置X host端）IP=$(ifconf">
+<meta name="twitter:title" content="组件状态管理">
+<meta name="twitter:description" content="何谓组件和容器 一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。  一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。可以理解管理组件的组件。  GUI 应用应该由一个个组件像搭积木形成的一个个容器构成   无状态管理 (MV)123updateUI ( model -&amp;gt; UI)">
+<meta name="twitter:image" content="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png">
 
 
 
@@ -134,13 +135,13 @@
 
 
 
-  <link rel="canonical" href="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/"/>
+  <link rel="canonical" href="http://truejasonfans.github.io/2019/04/05/component_state/"/>
 
 
 
 
 
-  <title>如何在mac的docker上运行GUI程序 | Leisure Moment</title>
+  <title>组件状态管理 | Leisure Moment</title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="default">
@@ -280,7 +281,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/component_state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -297,7 +298,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">如何在mac的docker上运行GUI程序</h1>
+          <h1 class="post-title" itemprop="name headline">组件状态管理</h1>
         
 
         <div class="post-meta">
@@ -309,8 +310,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-09T12:30:17+08:00">
-                2018-09-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:35:17+08:00">
+                2019-04-05
               </time>
             
 
@@ -344,14 +345,47 @@
       
 
       
-        <h2 id="如何在mac的docker上运行GUI程序"><a href="#如何在mac的docker上运行GUI程序" class="headerlink" title="如何在mac的docker上运行GUI程序"></a>如何在mac的docker上运行GUI程序</h2><ol>
-<li><p>提供mac 上本身不带有X window system support, 需要安装<br>XQuartz以提供支持。<br>推荐安装方法 brew cask install xquartz</p>
+        <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
 </li>
-<li><p>配置Xquartz security: enable the connection from network port</p>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
 </li>
-<li>配置Xhost（配置X host端）<br>IP=$(ifconfig en0 | grep inet | awk ‘$1==”inet” {print $2}’)<br>shell&gt;&gt; xhost + $IP</li>
-<li>以-e 参数启动一个容器<br>docker run -t -i -e DISPLAY=$IP:0 hasedon/centos6.5 /bin/bash</li>
-<li>在该容器中便可以运行gui程序了。</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
+</ol>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
 </ol>
 
       
@@ -380,12 +414,6 @@
 
     <footer class="post-footer">
       
-        <div class="post-tags">
-          
-            <a href="/tags/docker/" rel="tag"># docker</a>
-          
-        </div>
-      
 
       
       
@@ -395,8 +423,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/09/nginx/" rel="next" title="nginx">
-                <i class="fa fa-chevron-left"></i> nginx
+              <a href="/2019/04/05/重构与模式1/" rel="next" title="重构与模式读书笔记1">
+                <i class="fa fa-chevron-left"></i> 重构与模式读书笔记1
               </a>
             
           </div>
@@ -404,10 +432,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/09/23/java_fx_render_system_arch/" rel="prev" title="Javafx渲染系统架构">
-                Javafx渲染系统架构 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -543,7 +567,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#如何在mac的docker上运行GUI程序"><span class="nav-number">1.</span> <span class="nav-text">如何在mac的docker上运行GUI程序</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#何谓组件和容器"><span class="nav-number">1.</span> <span class="nav-text">何谓组件和容器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#无状态管理-MV"><span class="nav-number">2.</span> <span class="nav-text">无状态管理 (MV)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Binding机制view-model-MVVM"><span class="nav-number">3.</span> <span class="nav-text">Binding机制view model (MVVM)</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#java-fx中一切变化皆表现为property的变化"><span class="nav-number">3.1.</span> <span class="nav-text">java fx中一切变化皆表现为property的变化</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#组件间通信"><span class="nav-number">4.</span> <span class="nav-text">组件间通信</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#父子组件通信"><span class="nav-number">4.1.</span> <span class="nav-text">父子组件通信</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#旁系组件通信"><span class="nav-number">4.2.</span> <span class="nav-text">旁系组件通信</span></a></li></ol></li></ol></div>
             
 
           </div>
@@ -566,7 +590,7 @@
         <div class="copyright" >
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>

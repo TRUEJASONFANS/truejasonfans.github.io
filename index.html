@@ -277,7 +277,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/09/23/java_fx_render_system_arch/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/component_state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -296,7 +296,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/23/java_fx_render_system_arch/" itemprop="url">Javafx渲染系统架构</a></h1>
+                <a class="post-title-link" href="/2019/04/05/component_state/" itemprop="url">组件状态管理</a></h1>
         
 
         <div class="post-meta">
@@ -308,8 +308,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-23T18:00:00+08:00">
-                2018-09-23
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:35:17+08:00">
+                2019-04-05
               </time>
             
 
@@ -345,16 +345,47 @@
       
         
           
-            <h2 id="Open-GL"><a href="#Open-GL" class="headerlink" title="Open GL"></a>Open GL</h2><p>底层图形库实现标准<br>我们可以用它来实现基本的2D，3D图形</p>
-<h2 id="JavaFx-架构"><a href="#JavaFx-架构" class="headerlink" title="JavaFx 架构"></a>JavaFx 架构</h2><p><img src="https://docs.oracle.com/javafx/2/architecture/img/jfxar_dt_001_arch-diag.png" alt=""><br>Prism是它的渲染引擎， 它可以基于java2d, OpenGL, D3D.</p>
-<ol>
-<li>D3D(Windows 下的图形编程接口，属于DirectX的一部分)</li>
-<li>liniux下默认使用OpenGL</li>
-<li>当硬件不支持时候，基于Java2d渲染。几乎所有jre已经提供了java2d的支持</li>
+            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
+</li>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
+</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
 </ol>
-<h2 id="Java-binding-for-Open-GL-API"><a href="#Java-binding-for-Open-GL-API" class="headerlink" title="Java binding for Open GL API"></a>Java binding for Open GL API</h2><ol>
-<li>JOGL 关注2d,3d渲染 不关注sound和input-output</li>
-<li>LWJGL limit support for AWT/Swings</li>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
 </ol>
 
           
@@ -399,7 +430,7 @@
   
 
   <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/09/09/Run-GUI-MAC-DOCKER/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/重构与模式1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -418,7 +449,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2018/09/09/Run-GUI-MAC-DOCKER/" itemprop="url">如何在mac的docker上运行GUI程序</a></h1>
+                <a class="post-title-link" href="/2019/04/05/重构与模式1/" itemprop="url">重构与模式读书笔记1</a></h1>
         
 
         <div class="post-meta">
@@ -430,8 +461,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-09-09T12:30:17+08:00">
-                2018-09-09
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
+                2019-04-05
               </time>
             
 
@@ -467,15 +498,166 @@
       
         
           
-            <h2 id="如何在mac的docker上运行GUI程序"><a href="#如何在mac的docker上运行GUI程序" class="headerlink" title="如何在mac的docker上运行GUI程序"></a>如何在mac的docker上运行GUI程序</h2><ol>
-<li><p>提供mac 上本身不带有X window system support, 需要安装<br>XQuartz以提供支持。<br>推荐安装方法 brew cask install xquartz</p>
-</li>
-<li><p>配置Xquartz security: enable the connection from network port</p>
-</li>
-<li>配置Xhost（配置X host端）<br>IP=$(ifconfig en0 | grep inet | awk ‘$1==”inet” {print $2}’)<br>shell&gt;&gt; xhost + $IP</li>
-<li>以-e 参数启动一个容器<br>docker run -t -i -e DISPLAY=$IP:0 hasedon/centos6.5 /bin/bash</li>
-<li>在该容器中便可以运行gui程序了。</li>
+            <h2 id="写这本书的原因"><a href="#写这本书的原因" class="headerlink" title="写这本书的原因"></a>写这本书的原因</h2><ol>
+<li>过度设计</li>
+<li>设计不足</li>
+<li>测试驱动开发和持续重构 两个重要实践降低过度设计和设计不足的几率</li>
+<li>重构与模式 密不可分的关系：在许多重构方法中，模式有助于改进设计。 许多时候我们通过重构实现模式，或者趋向模式进行重构。模式与重构之间存在天然联系。模式是你想到达的目的地，而重构则是从其他地方抵达这个目的地的条条道路。 </li>
+<li>渐进式设计 =&gt; 重构实现模式或者重构趋向模式</li>
 </ol>
+<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ol>
+<li>使新代码的增加更容易 （降低耦合）</li>
+<li>改善既有的代码的设计 </li>
+<li>对代码的理解更透彻 </li>
+<li>提高编程的趣味性 （减少dirty work，比如降低处理check in冲突的巨类的存在）</li>
+</ol>
+<h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>何谓模式？<br>每个模式是由三个部分组成的规则：</p>
+<ol>
+<li>某一个环境</li>
+<li>一个问题</li>
+<li>解决问题方案</li>
+</ol>
+<h3 id="通过重构实现-趋向和去除模式"><a href="#通过重构实现-趋向和去除模式" class="headerlink" title="通过重构实现,趋向和去除模式"></a>通过重构实现,趋向和去除模式</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor1.png" alt=""><br><img src="/2019/04/05/重构与模式1/pattern_refactor2.png" alt=""></p>
+<h3 id="模式是不是使代码变得更复杂"><a href="#模式是不是使代码变得更复杂" class="headerlink" title="模式是不是使代码变得更复杂"></a>模式是不是使代码变得更复杂</h3><ol>
+<li>缺乏对模式的认知</li>
+<li>进一步重构十分必要</li>
+<li>谨慎采用模式的预先设计</li>
+</ol>
+<h3 id="代码坏味"><a href="#代码坏味" class="headerlink" title="代码坏味"></a>代码坏味</h3><ol>
+<li>重复</li>
+<li>不清晰</li>
+<li>复杂</li>
+</ol>
+<p><img src="/2019/04/05/重构与模式1/pattern_refactor3.png" alt=""><br><img src="/2019/04/05/重构与模式1/pattern_refactor4.png" alt=""></p>
+<h3 id="重复代码"><a href="#重复代码" class="headerlink" title="重复代码"></a>重复代码</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor5.PNG" alt=""></p>
+<h3 id="过长函数"><a href="#过长函数" class="headerlink" title="过长函数"></a>过长函数</h3><ol>
+<li>避免重复代码</li>
+<li>提高阅读性</li>
+<li>&lt;= 10 行以内</li>
+<li>小函数串起来几乎对性能无影响， 对条件分支过长的 可以考虑用command 模式， strategy等模式来替换</li>
+</ol>
+<h3 id="条件逻辑太复杂"><a href="#条件逻辑太复杂" class="headerlink" title="条件逻辑太复杂"></a>条件逻辑太复杂</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor6.PNG" alt=""></p>
+<h3 id="基本类型偏执"><a href="#基本类型偏执" class="headerlink" title="基本类型偏执"></a>基本类型偏执</h3><ol>
+<li>不要用基本类型值来控制类的逻辑，应该考虑用类替换类型代码重构.这样将得到类型安全而且能够扩展新行为的代码.</li>
+</ol>
+<h3 id="不太恰当的暴露"><a href="#不太恰当的暴露" class="headerlink" title="不太恰当的暴露"></a>不太恰当的暴露</h3><ol>
+<li>利用工厂方法或 工厂模式 隐藏类的构造过程中的复杂逻辑</li>
+</ol>
+<h3 id="解决方案蔓延"><a href="#解决方案蔓延" class="headerlink" title="解决方案蔓延"></a>解决方案蔓延</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor7.PNG" alt=""></p>
+<h3 id="异曲同工的类"><a href="#异曲同工的类" class="headerlink" title="异曲同工的类"></a>异曲同工的类</h3>
+          
+        
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <div>
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/content-type与spring 后数据/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/05/content-type与spring 后数据/" itemprop="url">content-type 与spring boot 控制器的值注入关系</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
+                2019-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p>
+<p>var params = ‘orem=ipsum&amp;name=binny’;</p>
+<h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>
 
           
         
@@ -742,159 +924,6 @@
 <li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
 <li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
 </ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/component_state/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/09/component_state/" itemprop="url">组件状态管理</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T23:21:59+08:00">
-                2018-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
-<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
-</li>
-<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
-</li>
-<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
-</li>
-</ol>
-<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
-<p>UI.control.addListener(e-&gt; updateModel())</p>
-<p>UI状态维护困难，UI难以复用。</p>
-<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
-<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
-<ol>
-<li><p>定义domain 均为property</p>
-</li>
-<li><p>view 与 viewModel 双向绑定</p>
-</li>
-<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
-</li>
-<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
-</li>
-<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
-</li>
-<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
-</ol>
-<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
-<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
-<li><p>通过相互领域模型的bind</p>
-</li>
-<li><p>event bus</p>
-</li>
-</ol>
-<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
-<li><p>scene graph 上节点</p>
-</li>
-<li><p>event bus</p>
-</li>
-</ol>
-<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
-<li>event bus</li>
-</ol>
 
           
         
@@ -1371,6 +1400,8 @@
 </li>
 <li><p>为什么在某机起的http服务，同一子网内的机器访问不了？<br>通常情况下是端口和host的问题，这里注意不能把Host设置为127.0.0.1(设置为回环地址。该地址指电脑本身，主要预留测试本机的TCP/IP协议是否正常。只要使用这个地址发送数据，则数据包不会出现在网络传输过程中）。绑定为0.0.0.0，在服务器中，0.0.0.0指的是本机上的所有IPV4地址，如果一个主机有两个IP地址，192.168.1.1 和 10.1.2.1，并且该主机上的一个服务监听的地址是0.0.0.0,那么通过两个ip地址都能够访问该服务。</p>
 </li>
+<li><p>webpack加载动态图片资源<br>利用require.context 会在当前创建一个资源上下文，相关资源都会被最终打包。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> context = <span class="built_in">require</span>.context(<span class="string">'../images'</span>, <span class="literal">true</span>,  /^\.\<span class="comment">//)</span></span><br><span class="line"><span class="keyword">let</span> fileName;</span><br><span class="line"><span class="keyword">let</span> img = context(fileNmae)</span><br></pre></td></tr></table></figure></li>
 </ol>
 
           
@@ -1483,19 +1514,25 @@
       
         
           
-            <h1 id="传统mvc-模型"><a href="#传统mvc-模型" class="headerlink" title="传统mvc 模型"></a>传统mvc 模型</h1><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1506364035137&amp;di=a0ecd7857196fff1b9bec39b12cf4e3d&amp;imgtype=0&amp;src=http%3A%2F%2Fwww.uml.org.cn%2Fzjjs%2Fimages%2F2016070733.jpg" alt=""></p>
-<p>缺点：当一个view A(组件）会引起另外一些view B的变化的时候，状态逻辑比会比较散乱，比如 View B的model监听 VIEW A model 的变化</p>
-<h1 id="Redux-模型"><a href="#Redux-模型" class="headerlink" title="Redux 模型"></a>Redux 模型</h1><p><img src="https://timgsa.baidu.com/timg?image&amp;quality=80&amp;size=b9999_10000&amp;sec=1509558287821&amp;di=a531d78dc6d05174bfaeb2f6ef8a4dac&amp;imgtype=0&amp;src=http%3A%2F%2Fimages2015.cnblogs.com%2Fblog%2F902276%2F201611%2F902276-20161110210030108-692932045.png" alt=""></p>
+            <h1 id="传统mvc-模型"><a href="#传统mvc-模型" class="headerlink" title="传统mvc 模型"></a>传统mvc 模型</h1><p><img src="/2017/09/18/redux_learn/mvc1.jpg" alt=""><br><img src="/2017/09/18/redux_learn/mvc2.jpg" alt=""></p>
+<p>model 与 view 之间的双向对话， 让数据和状态管理变的复杂</p>
+<h1 id="Redux-Flux-reducer"><a href="#Redux-Flux-reducer" class="headerlink" title="Redux (Flux + reducer)"></a>Redux (Flux + reducer)</h1><p>基于Flux 单向数据流的状态管理框架</p>
+<p><img src="/2017/09/18/redux_learn/redux.png" alt=""> </p>
+<ol>
+<li>单向数据流 </li>
+<li>唯一数据源 (Store)</li>
+<li>保持状态只读</li>
+<li>数据改变只能通过纯函数完成（Reducer）</li>
+</ol>
+<hr>
 <h1 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h1><ul>
 <li>行为的抽象</li>
 <li>普通的JS 对象</li>
 <li>必须有一个type</li>
 <li>一般由方法生成</li>
 </ul>
-<hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">const</span> addTodo = <span class="function">(<span class="params">text</span>) =&gt;</span> (&#123;</span><br><span class="line">	    type: <span class="string">'ADD_TODO'</span>,</span><br><span class="line">	    id: nextTodoId++,</span><br><span class="line">	    text</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
-<h1 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h1><p>响应的抽象,只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。   (previousState, action) =&gt; newState<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> undoable <span class="keyword">from</span> <span class="string">'redux-undo'</span></span><br><span class="line"><span class="keyword">const</span> todo = <span class="function">(<span class="params">state, action</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'ADD_TODO'</span>:</span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                id: action.id,</span><br><span class="line">                text: action.text,</span><br><span class="line">                completed: <span class="literal">false</span></span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'TOGGLE_TODO'</span>:</span><br><span class="line">            <span class="keyword">if</span> (state.id !== action.id) &#123;</span><br><span class="line">                <span class="keyword">return</span> state</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="keyword">return</span> &#123;</span><br><span class="line">                ...state,</span><br><span class="line">                completed: !state.completed</span><br><span class="line">            &#125;</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> state</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">const</span> todos = <span class="function">(<span class="params">state = [], action</span>) =&gt;</span> &#123;</span><br><span class="line">    <span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'ADD_TODO'</span>:</span><br><span class="line">            <span class="keyword">return</span> [</span><br><span class="line">                ...state,</span><br><span class="line">                todo(<span class="literal">undefined</span>, action)</span><br><span class="line">            ]</span><br><span class="line">        <span class="keyword">case</span> <span class="string">'TOGGLE_TODO'</span>:</span><br><span class="line">            <span class="keyword">return</span> state.map(<span class="function"><span class="params">t</span> =&gt;</span></span><br><span class="line">                todo(t, action)</span><br><span class="line">            )</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            <span class="keyword">return</span> state</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> undoableTodos = undoable(todos)</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> undoableTodos</span><br></pre></td></tr></table></figure></p>
-<h2 id="合成reducer-讲多个reducer合并以方便传入"><a href="#合成reducer-讲多个reducer合并以方便传入" class="headerlink" title="合成reducer 讲多个reducer合并以方便传入"></a>合成reducer 讲多个reducer合并以方便传入</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; combineReducers &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> todos <span class="keyword">from</span> <span class="string">'./todos'</span></span><br><span class="line"><span class="keyword">import</span> visibilityFilter <span class="keyword">from</span> <span class="string">'./visibilityFilter'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> todoApp = combineReducers(&#123;</span><br><span class="line">  todos,</span><br><span class="line">  visibilityFilter</span><br><span class="line">&#125;)</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> todoApp</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Action</span><br><span class="line">const increaseAction = &#123; type: &apos;increase&apos; &#125;</span><br></pre></td></tr></table></figure>
+<h1 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h1><p>响应的抽象,只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。   (previousState, action) =&gt; newState<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reducer</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">counter</span>(<span class="params">state = &#123; count: <span class="number">0</span> &#125;, action</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> count = state.count</span><br><span class="line">	<span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="string">'increase'</span>:</span><br><span class="line">	      <span class="keyword">return</span> &#123; <span class="attr">count</span>: count + <span class="number">1</span> &#125;</span><br><span class="line">	    <span class="keyword">default</span>:</span><br><span class="line">	      <span class="keyword">return</span> state</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> todos</span><br></pre></td></tr></table></figure></p>
 <h1 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h1><p>状态树, 状态的“数据库”，<br>Store 有以下职责：</p>
 <ul>
 <li>维持应用的 state；</li>
@@ -1505,13 +1542,7 @@
 <li>通过 subscribe(listener) 返回的函数注销监听器</li>
 </ul>
 <hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123; render &#125; <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Provider &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./components/App'</span></span><br><span class="line"><span class="keyword">import</span> todoApp <span class="keyword">from</span> <span class="string">'./reducers/index'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> store = createStore(todoApp)</span><br></pre></td></tr></table></figure>
-<h1 id="redux-数据流"><a href="#redux-数据流" class="headerlink" title="redux 数据流"></a>redux 数据流</h1><ol>
-<li>store.dispatch(action)。</li>
-<li>store 调用reducer函数响应</li>
-<li>store 合并多个子reducer输出，合并成一个单一的state树</li>
-<li>Redux store 保存了根 reducer 返回的完整 state 树</li>
-</ol>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Store</span></span><br><span class="line"><span class="keyword">const</span> store = createStore(counter)</span><br></pre></td></tr></table></figure>
 <h1 id="container-与-component-区分"><a href="#container-与-component-区分" class="headerlink" title="container 与 component 区分"></a>container 与 component 区分</h1><p><img src="https://i.imgur.com/Ep9z9Sp.png" alt=""></p>
 <h2 id="component-UI组件"><a href="#component-UI组件" class="headerlink" title="component: UI组件"></a>component: UI组件</h2><p>不含有状态，UI 组件又称为”纯组件”，即它纯函数一样，纯粹由参数决定它的值</p>
 <h2 id="container-容器组建"><a href="#container-容器组建" class="headerlink" title="container: 容器组建"></a>container: 容器组建</h2><ul>
@@ -1527,16 +1558,16 @@
 </ul>
 <h2 id="mapStateToProps"><a href="#mapStateToProps" class="headerlink" title="mapStateToProps()"></a>mapStateToProps()</h2><p>mapStateToProps是一个函数。它的作用就是像它的名字那样，建立一个从（外部的）state对象到（UI 组件的）props对象的映射关系。</p>
 <hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> mapStateToProps = <span class="function">(<span class="params">state</span>) =&gt;</span> (&#123;</span><br><span class="line">  todos: getVisibleTodos(state.todos.present, state.visibilityFilter)</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map Redux state to component props</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapStateToProps</span>(<span class="params">state</span>) </span>&#123;</span><br><span class="line">	  <span class="keyword">return</span> &#123;</span><br><span class="line">	    value: state.count</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>connect方法可以省略mapStateToProps参数，那样的话，UI 组件就不会订阅Store，就是说 Store 的更新不会引起 UI 组件的更新。</p>
 <hr>
-<h2 id="mapDispatchToProps"><a href="#mapDispatchToProps" class="headerlink" title="mapDispatchToProps()"></a>mapDispatchToProps()</h2><p>mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射。也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store。它可以是一个函数，也可以是一个对象。</p>
+<h2 id="mapDispatchToProps"><a href="#mapDispatchToProps" class="headerlink" title="mapDispatchToProps()"></a>mapDispatchToProps()</h2><p>mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射。也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store。它可以是一个函数，也可以是一个对象。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map Redux actions to component props</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapDispatchToProps</span>(<span class="params">dispatch</span>) </span>&#123;</span><br><span class="line">	 <span class="keyword">return</span> &#123;</span><br><span class="line">	    onIncreaseClick: <span class="function"><span class="params">()</span> =&gt;</span> dispatch(increaseAction)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
 <h1 id="provider-组件"><a href="#provider-组件" class="headerlink" title="provider 组件"></a>provider 组件</h1><p>connect方法生成容器组件以后，需要让容器组件拿到state对象，才能生成 UI 组件的参数。<br>一种解决方法是将state对象作为参数，传入容器组件。但是，这样做比较麻烦，尤其是容器组件可能在很深的层级，一级级将state传下去就很麻烦。React-Redux 提供Provider组件，可以让容器组件拿到state</p>
-<hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123; Provider &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> todoApp <span class="keyword">from</span> <span class="string">'./reducers'</span></span><br><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./components/App'</span></span><br><span class="line"><span class="keyword">let</span> store = createStore(todoApp);</span><br><span class="line"></span><br><span class="line">render(</span><br><span class="line">  &lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">    &lt;App /&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">	&lt;App /&gt;</span><br><span class="line">&lt;/Provider&gt;</span><br></pre></td></tr></table></figure>
 <hr>
 <h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><hr>
 <figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Provider, connect &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// React component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; value, onIncreaseClick &#125; = <span class="keyword">this</span>.props</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;&#123;value&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;onIncreaseClick&#125;&gt;Increase&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Counter.propTypes = &#123;</span></span><br><span class="line"><span class="regexp">  value: PropTypes.number.isRequired,</span></span><br><span class="line"><span class="regexp">  onIncreaseClick: PropTypes.func.isRequired</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Action</span></span><br><span class="line"><span class="regexp">const increaseAction = &#123; type: 'increase' &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Reducer</span></span><br><span class="line"><span class="regexp">function counter(state = &#123; count: 0 &#125;, action) &#123;</span></span><br><span class="line"><span class="regexp">  const count = state.count</span></span><br><span class="line"><span class="regexp">  switch (action.type) &#123;</span></span><br><span class="line"><span class="regexp">    case 'increase':</span></span><br><span class="line"><span class="regexp">      return &#123; count: count + 1 &#125;</span></span><br><span class="line"><span class="regexp">    default:</span></span><br><span class="line"><span class="regexp">      return state</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Store</span></span><br><span class="line"><span class="regexp">const store = createStore(counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux state to component props</span></span><br><span class="line"><span class="regexp">function mapStateToProps(state) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    value: state.count</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux actions to component props</span></span><br><span class="line"><span class="regexp">function mapDispatchToProps(dispatch) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    onIncreaseClick: () =&gt; dispatch(increaseAction)</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Connected Component</span></span><br><span class="line"><span class="regexp">const App = connect(</span></span><br><span class="line"><span class="regexp">  mapStateToProps,</span></span><br><span class="line"><span class="regexp">  mapDispatchToProps</span></span><br><span class="line"><span class="regexp">)(Counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">ReactDOM.render(</span></span><br><span class="line"><span class="regexp">  &lt;Provider store=&#123;store&#125;&gt;</span></span><br><span class="line"><span class="regexp">    &lt;App /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
+
           
         
       
@@ -1690,7 +1721,7 @@
         <div class="copyright" >
   
   &copy;  2016 - 
-  <span itemprop="copyrightYear">2018</span>
+  <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
