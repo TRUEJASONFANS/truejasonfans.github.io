@@ -2,6 +2,13 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>http://truejasonfans.github.io/2019/04/10/memory-leak-fx/</loc>
+    
+    <lastmod>2019-04-09T16:15:58.569Z</lastmod>
+    
+  </url>
+  
+  <url>
     <loc>http://truejasonfans.github.io/2017/09/18/redux_learn/</loc>
     
     <lastmod>2019-04-04T17:35:17.248Z</lastmod>
@@ -12,6 +19,20 @@
     <loc>http://truejasonfans.github.io/2019/04/05/component_state/</loc>
     
     <lastmod>2019-04-04T17:35:17.247Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://truejasonfans.github.io/2016/06/22/database_pattern/</loc>
+    
+    <lastmod>2019-04-04T17:28:14.459Z</lastmod>
+    
+  </url>
+  
+  <url>
+    <loc>http://truejasonfans.github.io/2019/04/05/dynamic_proxy/</loc>
+    
+    <lastmod>2019-04-04T17:28:14.458Z</lastmod>
     
   </url>
   
@@ -51,14 +72,14 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/tags/index.html</loc>
+    <loc>http://truejasonfans.github.io/about/index.html</loc>
     
     <lastmod>2018-08-09T15:21:59.643Z</lastmod>
     
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/about/index.html</loc>
+    <loc>http://truejasonfans.github.io/tags/index.html</loc>
     
     <lastmod>2018-08-09T15:21:59.643Z</lastmod>
     
@@ -93,9 +114,9 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2018/08/09/dynamic_proxy/</loc>
+    <loc>http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/</loc>
     
-    <lastmod>2018-08-09T15:21:59.638Z</lastmod>
+    <lastmod>2018-08-09T15:21:59.637Z</lastmod>
     
   </url>
   
@@ -107,23 +128,9 @@
   </url>
   
   <url>
-    <loc>http://truejasonfans.github.io/2016/06/09/jvm-augments-summary/</loc>
-    
-    <lastmod>2018-08-09T15:21:59.637Z</lastmod>
-    
-  </url>
-  
-  <url>
     <loc>http://truejasonfans.github.io/2016/12/18/java-fx-property/</loc>
     
     <lastmod>2018-08-09T15:21:59.636Z</lastmod>
-    
-  </url>
-  
-  <url>
-    <loc>http://truejasonfans.github.io/2016/06/22/database_pattern/</loc>
-    
-    <lastmod>2018-08-09T15:21:59.635Z</lastmod>
     
   </url>
   

@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,7 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
 
 
@@ -110,8 +111,9 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
+    tabs: true,
     motion: true,
     duoshuo: {
       userId: '0',
@@ -136,10 +138,6 @@
 
 
   <title>Leisure Moment</title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
-
   
 
 
@@ -155,6 +153,9 @@
 
 
 
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
 
   
   
@@ -209,16 +210,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -235,6 +226,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
           </a>
         </li>
       
@@ -276,7 +277,143 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/10/memory-leak-fx/" itemprop="url">memory_leak_fx</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-10T00:10:28+08:00">
+                2019-04-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="Root-cause"><a href="#Root-cause" class="headerlink" title="Root cause"></a>Root cause</h2><p>The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by<br>a fx static root object.<br>一些监听器诸如changeListener, invalidationListener , EventHandler 持有了UI 的强引用， 而这些监听起又被某些fx property 所持有， 而fx的某些property又被某些静态根对象所持有。<br>最后导致UI对象一直被持有而无法释放，从而导致了内存泄漏。</p>
+<h2 id="normal-case"><a href="#normal-case" class="headerlink" title="normal case"></a>normal case</h2><ol>
+<li><img src="/2019/04/10/memory-leak-fx/ChartToolTip.png" alt="leak_1"><br>引用链：component-&gt; MouseListener -&gt;持有 chartTooltipBehavior实例 -&gt; 持有FXToolTipHandler实例-&gt; 持有ToolTIp-&gt;… -&gt; 最终持有 AutoSelectioHeatMapPlotPoint (一个HeatMap block对象)<br>该component是JLightFrame的一个实例， 此处代码应该是chartDirector 基于swing的实现， 最终被disposer的records的根对象处理。</li>
+</ol>
+<p>这里我们两种方案解决这个内存泄漏，<br>fix Disposer的源码， value对象使用weakReference存储<br>fix mouseLisenter，使上层 Ui 对象得到回收</p>
+<ol>
+<li><img src="/2019/04/10/memory-leak-fx/RichChangeListener.png" alt="leak2"><br>引用链：lamda 对象-&gt; 持有content-&gt;持有richChangeList-&gt; …. -&gt; PatternContrainCodeArea对象</li>
+</ol>
+<h2 id="How-to-get-rid-of-memeory-leak"><a href="#How-to-get-rid-of-memeory-leak" class="headerlink" title="How to get rid of memeory leak"></a>How to get rid of memeory leak</h2><ol>
+<li>禁止使用匿名内部类表达式 （匿名内部类对象一定持有当前上下文this对象）</li>
+<li>使用lamda表达式或者静态内部类</li>
+<li>在lamda表达式以及静态内部类中 对于外部对象， 使用弱引用（尤其是UI）。<br>使用weakReference 封装需要在lambda表达式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;O&gt; <span class="function">InvalidationListener <span class="title">weak</span><span class="params">(O obj, Action2&lt;Observable, O&gt; listener)</span> </span>&#123;</span><br><span class="line">  WeakReference&lt;O&gt; weak = <span class="keyword">new</span> WeakReference&lt;&gt;(obj);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> InvalidationListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invalidated</span><span class="params">(Observable ob)</span> </span>&#123;</span><br><span class="line">      O object = weak.get();</span><br><span class="line">      <span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123; <span class="comment">// isDispose() == true</span></span><br><span class="line">        ob.removeListener(<span class="keyword">this</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 类似在swt 中 判断 isDispose() == false</span></span><br><span class="line">        listener.call(ob, object);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/component_state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -337,6 +474,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -392,18 +532,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -417,6 +554,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -429,7 +570,168 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/dynamic_proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/05/dynamic_proxy/" itemprop="url">AOP实践</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
+                2019-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入,也就是运行期进行织入。</p>
+<p>   根据织入的时期，可以分为以下几个时期</p>
+<ul>
+<li>编译前</li>
+<li>编译后</li>
+<li>装载后</li>
+<li>运行期</li>
+</ul>
+<p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p>
+<p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p>
+<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol>
+<li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li>
+<li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理</p>
+<p>增强的代码就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>增强目的：重复使用pool中“可贵“资源RpcConnection</p>
+<h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
+<ol>
+<li>定义方法调用前回调对象<br>在dao真正调用前进行”版本检测”</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>定义方法调用后回调对象<br>在dao完成写操作后，进行“写版本”操作</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AOP编程思想"><a href="#AOP编程思想" class="headerlink" title="AOP编程思想"></a>AOP编程思想</h3><p>OOP的有效补充（引用于知乎）</p>
+<ul>
+<li>面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。</li>
+<li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
+<li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
+</ul>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/重构与模式1/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -490,6 +792,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -549,18 +854,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -574,6 +876,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -586,7 +892,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/content-type与spring 后数据/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -647,6 +957,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -663,18 +976,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -688,6 +998,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -700,7 +1014,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/nginx/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -761,6 +1079,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -780,18 +1101,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -805,6 +1123,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -817,156 +1139,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/dynamic_proxy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/09/dynamic_proxy/" itemprop="url">AOP实践</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T23:21:59+08:00">
-                2018-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入,也就是运行期进行织入。</p>
-<p>   根据织入的时期，可以分为以下几个时期</p>
-<ul>
-<li>编译前</li>
-<li>编译后</li>
-<li>装载后</li>
-<li>运行期</li>
-</ul>
-<p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p>
-<p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p>
-<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol>
-<li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li>
-<li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理</p>
-<p>增强的代码就是：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>增强目的：重复使用pool中“可贵“资源RpcConnection</p>
-<h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
-<ol>
-<li>定义方法调用前回调对象<br>在dao真正调用前进行”版本检测”</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>定义方法调用后回调对象<br>在dao完成写操作后，进行“写版本”操作</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="AOP编程思想"><a href="#AOP编程思想" class="headerlink" title="AOP编程思想"></a>AOP编程思想</h3><p>OOP的有效补充（引用于知乎）</p>
-<ul>
-<li>面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。</li>
-<li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
-<li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
-</ul>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
   
   
   
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/vue/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1027,6 +1204,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1049,18 +1229,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -1074,6 +1251,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1086,7 +1267,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/hello-world/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1147,6 +1332,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1169,18 +1357,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -1194,6 +1379,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1206,7 +1395,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/04/02/deploy-flask-on-mac-0/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1267,6 +1460,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1289,18 +1485,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -1314,6 +1507,10 @@
         <div class="post-eof"></div>
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -1326,7 +1523,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/12/24/frontQuestions/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1387,6 +1588,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -1408,18 +1612,15 @@
         
       
     </div>
+    
+    
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
-    <div>
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -1433,170 +1634,10 @@
         <div class="post-eof"></div>
       
     </footer>
-  </article>
-
-
-    
-      
-
-  
-
+  </div>
   
   
   
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/09/18/redux_learn/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/09/18/redux_learn/" itemprop="url">redux同步使用学习</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-09-18T00:23:02+08:00">
-                2017-09-18
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="传统mvc-模型"><a href="#传统mvc-模型" class="headerlink" title="传统mvc 模型"></a>传统mvc 模型</h1><p><img src="/2017/09/18/redux_learn/mvc1.jpg" alt=""><br><img src="/2017/09/18/redux_learn/mvc2.jpg" alt=""></p>
-<p>model 与 view 之间的双向对话， 让数据和状态管理变的复杂</p>
-<h1 id="Redux-Flux-reducer"><a href="#Redux-Flux-reducer" class="headerlink" title="Redux (Flux + reducer)"></a>Redux (Flux + reducer)</h1><p>基于Flux 单向数据流的状态管理框架</p>
-<p><img src="/2017/09/18/redux_learn/redux.png" alt=""> </p>
-<ol>
-<li>单向数据流 </li>
-<li>唯一数据源 (Store)</li>
-<li>保持状态只读</li>
-<li>数据改变只能通过纯函数完成（Reducer）</li>
-</ol>
-<hr>
-<h1 id="Action"><a href="#Action" class="headerlink" title="Action"></a>Action</h1><ul>
-<li>行为的抽象</li>
-<li>普通的JS 对象</li>
-<li>必须有一个type</li>
-<li>一般由方法生成</li>
-</ul>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// Action</span><br><span class="line">const increaseAction = &#123; type: &apos;increase&apos; &#125;</span><br></pre></td></tr></table></figure>
-<h1 id="Reducer"><a href="#Reducer" class="headerlink" title="Reducer"></a>Reducer</h1><p>响应的抽象,只要传入参数相同，返回计算得到的下一个 state 就一定相同。没有特殊情况、没有副作用，没有 API 请求、没有变量修改，单纯执行计算。   (previousState, action) =&gt; newState<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Reducer</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">counter</span>(<span class="params">state = &#123; count: <span class="number">0</span> &#125;, action</span>) </span>&#123;</span><br><span class="line">	<span class="keyword">const</span> count = state.count</span><br><span class="line">	<span class="keyword">switch</span> (action.type) &#123;</span><br><span class="line">		<span class="keyword">case</span> <span class="string">'increase'</span>:</span><br><span class="line">	      <span class="keyword">return</span> &#123; <span class="attr">count</span>: count + <span class="number">1</span> &#125;</span><br><span class="line">	    <span class="keyword">default</span>:</span><br><span class="line">	      <span class="keyword">return</span> state</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> todos</span><br></pre></td></tr></table></figure></p>
-<h1 id="Store"><a href="#Store" class="headerlink" title="Store"></a>Store</h1><p>状态树, 状态的“数据库”，<br>Store 有以下职责：</p>
-<ul>
-<li>维持应用的 state；</li>
-<li>提供 getState() 方法获取 state；</li>
-<li>提供 dispatch(action) 方法更新 state；</li>
-<li>通过 subscribe(listener) 注册监听器;</li>
-<li>通过 subscribe(listener) 返回的函数注销监听器</li>
-</ul>
-<hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Store</span></span><br><span class="line"><span class="keyword">const</span> store = createStore(counter)</span><br></pre></td></tr></table></figure>
-<h1 id="container-与-component-区分"><a href="#container-与-component-区分" class="headerlink" title="container 与 component 区分"></a>container 与 component 区分</h1><p><img src="https://i.imgur.com/Ep9z9Sp.png" alt=""></p>
-<h2 id="component-UI组件"><a href="#component-UI组件" class="headerlink" title="component: UI组件"></a>component: UI组件</h2><p>不含有状态，UI 组件又称为”纯组件”，即它纯函数一样，纯粹由参数决定它的值</p>
-<h2 id="container-容器组建"><a href="#container-容器组建" class="headerlink" title="container: 容器组建"></a>container: 容器组建</h2><ul>
-<li>负责管理数据和业务逻辑，不负责 UI 的呈现</li>
-<li>带有内部状态</li>
-<li>使用 Redux 的 API</li>
-</ul>
-<p>connect 用于从UI组件生成容器组件</p>
-<p>connect方法接受两个参数：mapStateToProps和mapDispatchToProps</p>
-<ul>
-<li>（1）输入逻辑：外部的数据（即state对象）如何转换为 UI 组件的参数</li>
-<li>（2）输出逻辑：用户发出的动作如何变为 Action 对象，从 UI 组件传出去。</li>
-</ul>
-<h2 id="mapStateToProps"><a href="#mapStateToProps" class="headerlink" title="mapStateToProps()"></a>mapStateToProps()</h2><p>mapStateToProps是一个函数。它的作用就是像它的名字那样，建立一个从（外部的）state对象到（UI 组件的）props对象的映射关系。</p>
-<hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map Redux state to component props</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapStateToProps</span>(<span class="params">state</span>) </span>&#123;</span><br><span class="line">	  <span class="keyword">return</span> &#123;</span><br><span class="line">	    value: state.count</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>connect方法可以省略mapStateToProps参数，那样的话，UI 组件就不会订阅Store，就是说 Store 的更新不会引起 UI 组件的更新。</p>
-<hr>
-<h2 id="mapDispatchToProps"><a href="#mapDispatchToProps" class="headerlink" title="mapDispatchToProps()"></a>mapDispatchToProps()</h2><p>mapDispatchToProps是connect函数的第二个参数，用来建立 UI 组件的参数到store.dispatch方法的映射。也就是说，它定义了哪些用户的操作应该当作 Action，传给 Store。它可以是一个函数，也可以是一个对象。<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// Map Redux actions to component props</span></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">mapDispatchToProps</span>(<span class="params">dispatch</span>) </span>&#123;</span><br><span class="line">	 <span class="keyword">return</span> &#123;</span><br><span class="line">	    onIncreaseClick: <span class="function"><span class="params">()</span> =&gt;</span> dispatch(increaseAction)</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<h1 id="provider-组件"><a href="#provider-组件" class="headerlink" title="provider 组件"></a>provider 组件</h1><p>connect方法生成容器组件以后，需要让容器组件拿到state对象，才能生成 UI 组件的参数。<br>一种解决方法是将state对象作为参数，传入容器组件。但是，这样做比较麻烦，尤其是容器组件可能在很深的层级，一级级将state传下去就很麻烦。React-Redux 提供Provider组件，可以让容器组件拿到state</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">&lt;Provider store=&#123;store&#125;&gt;</span><br><span class="line">	&lt;App /&gt;</span><br><span class="line">&lt;/Provider&gt;</span><br></pre></td></tr></table></figure>
-<hr>
-<h1 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h1><hr>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> PropTypes <span class="keyword">from</span> <span class="string">'prop-types'</span></span><br><span class="line"><span class="keyword">import</span> ReactDOM <span class="keyword">from</span> <span class="string">'react-dom'</span></span><br><span class="line"><span class="keyword">import</span> &#123; createStore &#125; <span class="keyword">from</span> <span class="string">'redux'</span></span><br><span class="line"><span class="keyword">import</span> &#123; Provider, connect &#125; <span class="keyword">from</span> <span class="string">'react-redux'</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// React component</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Counter</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">const</span> &#123; value, onIncreaseClick &#125; = <span class="keyword">this</span>.props</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;div&gt;</span><br><span class="line">        &lt;span&gt;&#123;value&#125;&lt;<span class="regexp">/span&gt;</span></span><br><span class="line"><span class="regexp">        &lt;button onClick=&#123;onIncreaseClick&#125;&gt;Increase&lt;/</span>button&gt;</span><br><span class="line">      &lt;<span class="regexp">/div&gt;</span></span><br><span class="line"><span class="regexp">    )</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">Counter.propTypes = &#123;</span></span><br><span class="line"><span class="regexp">  value: PropTypes.number.isRequired,</span></span><br><span class="line"><span class="regexp">  onIncreaseClick: PropTypes.func.isRequired</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Action</span></span><br><span class="line"><span class="regexp">const increaseAction = &#123; type: 'increase' &#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Reducer</span></span><br><span class="line"><span class="regexp">function counter(state = &#123; count: 0 &#125;, action) &#123;</span></span><br><span class="line"><span class="regexp">  const count = state.count</span></span><br><span class="line"><span class="regexp">  switch (action.type) &#123;</span></span><br><span class="line"><span class="regexp">    case 'increase':</span></span><br><span class="line"><span class="regexp">      return &#123; count: count + 1 &#125;</span></span><br><span class="line"><span class="regexp">    default:</span></span><br><span class="line"><span class="regexp">      return state</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Store</span></span><br><span class="line"><span class="regexp">const store = createStore(counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux state to component props</span></span><br><span class="line"><span class="regexp">function mapStateToProps(state) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    value: state.count</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Map Redux actions to component props</span></span><br><span class="line"><span class="regexp">function mapDispatchToProps(dispatch) &#123;</span></span><br><span class="line"><span class="regexp">  return &#123;</span></span><br><span class="line"><span class="regexp">    onIncreaseClick: () =&gt; dispatch(increaseAction)</span></span><br><span class="line"><span class="regexp">  &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">/</span><span class="regexp">/ Connected Component</span></span><br><span class="line"><span class="regexp">const App = connect(</span></span><br><span class="line"><span class="regexp">  mapStateToProps,</span></span><br><span class="line"><span class="regexp">  mapDispatchToProps</span></span><br><span class="line"><span class="regexp">)(Counter)</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">ReactDOM.render(</span></span><br><span class="line"><span class="regexp">  &lt;Provider store=&#123;store&#125;&gt;</span></span><br><span class="line"><span class="regexp">    &lt;App /</span>&gt;</span><br><span class="line">  &lt;<span class="regexp">/Provider&gt;,</span></span><br><span class="line"><span class="regexp">  document.getElementById('root')</span></span><br><span class="line"><span class="regexp">)</span></span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <div>
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
   </article>
 
 
@@ -1605,7 +1646,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1629,6 +1670,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -1650,7 +1692,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -1672,7 +1714,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -1843,12 +1885,6 @@
 
 
 	
-
-
-
-
-
-  
 
 
 

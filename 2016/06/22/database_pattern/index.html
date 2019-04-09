@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,7 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
 
 
@@ -106,7 +107,7 @@
 <meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042969-702810485.jpg">
 <meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141043141-1497547913.jpg">
 <meta property="og:image" content="http://images2015.cnblogs.com/news/66372/201606/66372-20160622141042906-352048073.jpg">
-<meta property="og:updated_time" content="2018-08-09T15:21:59.635Z">
+<meta property="og:updated_time" content="2019-04-04T17:28:14.459Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库范式">
 <meta name="twitter:description" content="刚看了一遍博客园原文讲三大范式(关系型数据库)，是我觉看到目前最通俗的版本参考于余晟：从范式谈起. 第一范式：属性不能拆分换句话说，表中间的任何列都应当是承载信息的最小单位，不容许有更小的单位。一个人有身高、体重、性别等等，那么身高、体重、性别都应该对应专门的列，而不能取个名为“基本信息”的列，把这些信息统统塞进去。即数据库表的每一列都是不可分割的原子数据项。这个应该比较好理解，方便数据的索引与去">
@@ -119,8 +120,9 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
+    tabs: true,
     motion: true,
     duoshuo: {
       userId: '0',
@@ -145,10 +147,6 @@
 
 
   <title>数据库范式 | Leisure Moment</title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
-
   
 
 
@@ -164,6 +162,9 @@
 
 
 
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
 
   
   
@@ -216,16 +217,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -242,6 +233,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
           </a>
         </li>
       
@@ -283,7 +284,11 @@
   
   
 
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/06/22/database_pattern/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -342,6 +347,9 @@
       </header>
     
 
+    
+    
+    
     <div class="post-body" itemprop="articleBody">
 
       
@@ -363,27 +371,15 @@
 
       
     </div>
+    
+    
+    
 
-    <div>
-      
-        
+    
 
-      
-    </div>
+    
 
-    <div>
-      
-        
-
-      
-    </div>
-
-    <div>
-      
-        
-
-      
-    </div>
+    
 
     <footer class="post-footer">
       
@@ -423,6 +419,10 @@
       
       
     </footer>
+  </div>
+  
+  
+  
   </article>
 
 
@@ -456,6 +456,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -486,7 +487,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -508,7 +509,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -695,12 +696,6 @@
 
 
 	
-
-
-
-
-
-  
 
 
 

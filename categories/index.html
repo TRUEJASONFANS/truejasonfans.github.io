@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,7 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
 
 
@@ -111,8 +112,9 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
+    tabs: true,
     motion: true,
     duoshuo: {
       userId: '0',
@@ -137,10 +139,6 @@
 
 
   <title>categories | Leisure Moment</title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
-
   
 
 
@@ -156,6 +154,9 @@
 
 
 
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
 
   
   
@@ -208,16 +209,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -234,6 +225,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
           </a>
         </li>
       
@@ -267,7 +268,11 @@
             
 
   <div id="posts" class="posts-expand">
-  <header class="post-header">
+    
+    
+    
+    <div class="post-block page">
+      <header class="post-header">
 
 	<h1 class="post-title" itemprop="name headline">categories</h1>
 
@@ -275,16 +280,28 @@
 
 </header>
 
-    
-    
-      <div class="category-all-page">
-        <div class="category-all-title">
-            3 categories in total
-        </div>
-        <div class="category-all">
-          <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-fx/">java_fx</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/个人生活/">个人生活</a><span class="category-list-count">1</span></li></ul>
-        </div>
+      
+      
+      
+      <div class="post-body">
+        
+        
+          <div class="category-all-page">
+            <div class="category-all-title">
+                3 categories in total
+            </div>
+            <div class="category-all">
+              <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/java/">java</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/java-fx/">java_fx</a><span class="category-list-count">3</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/个人生活/">个人生活</a><span class="category-list-count">1</span></li></ul>
+            </div>
+          </div>
+        
       </div>
+      
+      
+      
+    </div>
+    
+    
     
   </div>
 
@@ -312,6 +329,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -333,7 +351,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -355,7 +373,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -526,12 +544,6 @@
 
 
 	
-
-
-
-
-
-  
 
 
 

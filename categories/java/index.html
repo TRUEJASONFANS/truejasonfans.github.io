@@ -1,4 +1,4 @@
-<!doctype html>
+<!DOCTYPE html>
 
 
 
@@ -10,6 +10,7 @@
   <meta charset="UTF-8"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
 
 
 
@@ -110,8 +111,9 @@
   var CONFIG = {
     root: '/',
     scheme: 'Muse',
-    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false},
+    sidebar: {"position":"left","display":"post","offset":12,"offset_float":0,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
+    tabs: true,
     motion: true,
     duoshuo: {
       userId: '0',
@@ -136,10 +138,6 @@
 
 
   <title>Category: java | Leisure Moment</title>
-</head>
-
-<body itemscope itemtype="http://schema.org/WebPage" lang="default">
-
   
 
 
@@ -155,6 +153,9 @@
 
 
 
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
 
   
   
@@ -207,16 +208,6 @@
         </li>
       
         
-        <li class="menu-item menu-item-about">
-          <a href="/about/" rel="section">
-            
-              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
-            
-            About
-          </a>
-        </li>
-      
-        
         <li class="menu-item menu-item-archives">
           <a href="/archives/" rel="section">
             
@@ -233,6 +224,16 @@
               <i class="menu-item-icon fa fa-fw fa-tags"></i> <br />
             
             Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-about">
+          <a href="/about/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-user"></i> <br />
+            
+            About
           </a>
         </li>
       
@@ -265,14 +266,19 @@
           <div id="content" class="content">
             
 
-  <section id="posts" class="posts-collapse">
-    <div class="collection-title">
-      <h1>java<small>Category</small>
-      </h1>
-    </div>
+  
+  
+  
+  <div class="post-block category">
 
-    
+    <div id="posts" class="posts-collapse">
+      <div class="collection-title">
+        <h1>java<small>Category</small>
+        </h1>
+      </div>
+
       
+        
 
   <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
     <header class="post-header">
@@ -299,8 +305,13 @@
   </article>
 
 
-    
-  </section>
+      
+    </div>
+
+  </div>
+  
+  
+  
 
   
 
@@ -325,6 +336,7 @@
   </div>
 
   <aside id="sidebar" class="sidebar">
+    
     <div class="sidebar-inner">
 
       
@@ -346,7 +358,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">20</span>
+                <span class="site-state-item-count">21</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -368,7 +380,7 @@
             
             <div class="site-state-item site-state-tags">
               <a href="/tags/index.html">
-                <span class="site-state-item-count">9</span>
+                <span class="site-state-item-count">7</span>
                 <span class="site-state-item-name">tags</span>
               </a>
             </div>
@@ -539,12 +551,6 @@
 
 
 	
-
-
-
-
-
-  
 
 
 
