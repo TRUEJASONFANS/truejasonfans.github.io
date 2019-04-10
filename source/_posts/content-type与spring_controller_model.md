@@ -1,5 +1,6 @@
 ---
 title: content-type 与spring boot 控制器的值注入关系
+tags: Web前端
 ---
 ## content-type = 'application/x-www-form-urlencoded' (不支持@RequestBody annotation)
 

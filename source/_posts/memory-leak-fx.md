@@ -1,7 +1,8 @@
 ---
 title: fx中的内存泄漏问题
 date: 2019-04-10 00:10:28
-tags:
+tags: java_fx
+categories: java_fx
 ---
 ## 原因 Root cause 
 The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by

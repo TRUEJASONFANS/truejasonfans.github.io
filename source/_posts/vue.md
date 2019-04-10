@@ -1,5 +1,6 @@
 ---
 title: vue笔记
+tags: Web前端
 ---
 1. $代表vue暴露的实力属性与方法
 2. @ 代表v-on 添建callback :代表v-bind添加双向绑定
