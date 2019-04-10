@@ -4,8 +4,8 @@ date: 2017-09-18 00:23:02
 tags: Web前端
 ---
 # 传统mvc 模型
-![](./mvc1.jpg)
-![](./mvc2.jpg)
+![](images/mvc1.jpg)
+![](images/mvc2.jpg)
 
 model 与 view 之间的双向对话， 让数据和状态管理变的复杂
 
@@ -13,7 +13,7 @@ model 与 view 之间的双向对话， 让数据和状态管理变的复杂
 
 基于Flux 单向数据流的状态管理框架
 
-![](./redux.png) 
+![](images/redux.png) 
 
  1. 单向数据流 
  2. 唯一数据源 (Store)
