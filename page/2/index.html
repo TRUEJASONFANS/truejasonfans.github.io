@@ -410,193 +410,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/重构与模式1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/11/重构与模式1/" itemprop="url">重构与模式读书笔记1</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T00:52:57+08:00">
-                2019-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">In</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/个人生活/" itemprop="url" rel="index">
-                    <span itemprop="name">个人生活</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="写这本书的原因"><a href="#写这本书的原因" class="headerlink" title="写这本书的原因"></a>写这本书的原因</h2><ol>
-<li>过度设计</li>
-<li>设计不足</li>
-<li>测试驱动开发和持续重构 两个重要实践降低过度设计和设计不足的几率</li>
-<li>重构与模式 密不可分的关系：在许多重构方法中，模式有助于改进设计。 许多时候我们通过重构实现模式，或者趋向模式进行重构。模式与重构之间存在天然联系。模式是你想到达的目的地，而重构则是从其他地方抵达这个目的地的条条道路。 </li>
-<li>渐进式设计 =&gt; 重构实现模式或者重构趋向模式</li>
-</ol>
-<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ol>
-<li>使新代码的增加更容易 （降低耦合）</li>
-<li>改善既有的代码的设计 </li>
-<li>对代码的理解更透彻 </li>
-<li>提高编程的趣味性 （减少dirty work，比如降低处理check in冲突的巨类的存在）</li>
-</ol>
-<h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>何谓模式？<br>每个模式是由三个部分组成的规则：</p>
-<ol>
-<li>某一个环境</li>
-<li>一个问题</li>
-<li>解决问题方案</li>
-</ol>
-<h3 id="通过重构实现-趋向和去除模式"><a href="#通过重构实现-趋向和去除模式" class="headerlink" title="通过重构实现,趋向和去除模式"></a>通过重构实现,趋向和去除模式</h3><p><img src="/2019/04/11/重构与模式1/pattern_refactor1.png" alt=""><br><img src="/2019/04/11/重构与模式1/pattern_refactor2.png" alt=""></p>
-<h3 id="模式是不是使代码变得更复杂"><a href="#模式是不是使代码变得更复杂" class="headerlink" title="模式是不是使代码变得更复杂"></a>模式是不是使代码变得更复杂</h3><ol>
-<li>缺乏对模式的认知</li>
-<li>进一步重构十分必要</li>
-<li>谨慎采用模式的预先设计</li>
-</ol>
-<h3 id="代码坏味"><a href="#代码坏味" class="headerlink" title="代码坏味"></a>代码坏味</h3><ol>
-<li>重复</li>
-<li>不清晰</li>
-<li>复杂</li>
-</ol>
-<p><img src="/2019/04/11/重构与模式1/pattern_refactor3.png" alt=""><br><img src="/2019/04/11/重构与模式1/pattern_refactor4.png" alt=""></p>
-<h3 id="重复代码"><a href="#重复代码" class="headerlink" title="重复代码"></a>重复代码</h3><p><img src="/2019/04/11/重构与模式1/pattern_refactor5.PNG" alt=""></p>
-<h3 id="过长函数"><a href="#过长函数" class="headerlink" title="过长函数"></a>过长函数</h3><ol>
-<li>避免重复代码</li>
-<li>提高阅读性</li>
-<li>&lt;= 10 行以内</li>
-<li>小函数串起来几乎对性能无影响， 对条件分支过长的 可以考虑用command 模式， strategy等模式来替换</li>
-</ol>
-<h3 id="条件逻辑太复杂"><a href="#条件逻辑太复杂" class="headerlink" title="条件逻辑太复杂"></a>条件逻辑太复杂</h3><p><img src="/2019/04/11/重构与模式1/pattern_refactor6.PNG" alt=""></p>
-<h3 id="基本类型偏执"><a href="#基本类型偏执" class="headerlink" title="基本类型偏执"></a>基本类型偏执</h3><ol>
-<li>不要用基本类型值来控制类的逻辑，应该考虑用类替换类型代码重构.这样将得到类型安全而且能够扩展新行为的代码.</li>
-</ol>
-<h3 id="不太恰当的暴露"><a href="#不太恰当的暴露" class="headerlink" title="不太恰当的暴露"></a>不太恰当的暴露</h3><ol>
-<li>利用工厂方法或 工厂模式 隐藏类的构造过程中的复杂逻辑</li>
-</ol>
-<h3 id="解决方案蔓延"><a href="#解决方案蔓延" class="headerlink" title="解决方案蔓延"></a>解决方案蔓延</h3><p><img src="/2019/04/11/重构与模式1/pattern_refactor7.PNG" alt=""></p>
-<h3 id="异曲同工的类"><a href="#异曲同工的类" class="headerlink" title="异曲同工的类"></a>异曲同工的类</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/content-type与spring_controller_model/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -706,6 +519,167 @@
 
 
     
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/component_state/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/11/component_state/" itemprop="url">组件状态管理</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T00:52:57+08:00">
+                2019-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
+</li>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
+</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
+</ol>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
   </section>
 
   
@@ -756,7 +730,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">24</span>
+                <span class="site-state-item-count">23</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

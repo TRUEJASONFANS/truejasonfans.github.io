@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://truejasonfans.github.io/"/>
-  <updated>2019-04-28T07:36:51.855Z</updated>
+  <updated>2019-09-17T16:32:46.651Z</updated>
   <id>http://truejasonfans.github.io/</id>
   
   <author>
@@ -17,32 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title></title>
-    <link href="http://truejasonfans.github.io/2019/04/28/RxJs%20operators/"/>
-    <id>http://truejasonfans.github.io/2019/04/28/RxJs operators/</id>
-    <published>2019-04-28T07:36:51.855Z</published>
-    <updated>2019-04-28T07:36:51.855Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="RxJs-operators"><a href="#RxJs-operators" class="headerlink" title="RxJs operators"></a>RxJs operators</h1>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;RxJs-operators&quot;&gt;&lt;a href=&quot;#RxJs-operators&quot; class=&quot;headerlink&quot; title=&quot;RxJs operators&quot;&gt;&lt;/a&gt;RxJs operators&lt;/h1&gt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title></title>
+    <title>Token</title>
     <link href="http://truejasonfans.github.io/2019/04/18/Token/"/>
     <id>http://truejasonfans.github.io/2019/04/18/Token/</id>
     <published>2019-04-18T14:58:42.728Z</published>
-    <updated>2019-04-18T14:58:42.728Z</updated>
+    <updated>2019-09-17T16:32:46.651Z</updated>
     
     <content type="html"><![CDATA[<h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><ol><li>客户端使用用户名跟密码请求登录</li><li>服务端收到请求，去验证用户名与密码</li><li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端<br>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里<br>3.客户端每次向服务端请求资源的时候需要带着服务端签发的 Token<br>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li></ol>]]></content>
     
@@ -58,6 +37,8 @@
     
     </summary>
     
+    
+      <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   
@@ -86,33 +67,6 @@
   </entry>
   
   <entry>
-    <title>vue笔记</title>
-    <link href="http://truejasonfans.github.io/2019/04/11/vue/"/>
-    <id>http://truejasonfans.github.io/2019/04/11/vue/</id>
-    <published>2019-04-10T16:52:57.653Z</published>
-    <updated>2019-04-10T16:52:57.653Z</updated>
-    
-    <content type="html"><![CDATA[<ol><li>$代表vue暴露的实力属性与方法</li><li>@ 代表v-on 添建callback :代表v-bind添加双向绑定</li><li>computed基于依赖缓存和methods则不是</li><li>当computed需要定制的时候采用watch选项</li><li>data必须是一个函数，否则同类组件将共享状态</li><li>插槽用来向子组件传递内容</li><li></li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;ol&gt;
-&lt;li&gt;$代表vue暴露的实力属性与方法&lt;/li&gt;
-&lt;li&gt;@ 代表v-on 添建callback :代表v-bind添加双向绑定&lt;/li&gt;
-&lt;li&gt;computed基于依赖缓存和methods则不是&lt;/li&gt;
-&lt;li&gt;当computed需要定制的时候采用watch选项
-      
-    
-    </summary>
-    
-    
-      <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
-    
-  </entry>
-  
-  <entry>
     <title>重构与模式读书笔记1</title>
     <link href="http://truejasonfans.github.io/2019/04/11/%E9%87%8D%E6%9E%84%E4%B8%8E%E6%A8%A1%E5%BC%8F1/"/>
     <id>http://truejasonfans.github.io/2019/04/11/重构与模式1/</id>
@@ -137,6 +91,33 @@
     
     
       <category term="个人生活随笔" scheme="http://truejasonfans.github.io/tags/%E4%B8%AA%E4%BA%BA%E7%94%9F%E6%B4%BB%E9%9A%8F%E7%AC%94/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>vue笔记</title>
+    <link href="http://truejasonfans.github.io/2019/04/11/vue/"/>
+    <id>http://truejasonfans.github.io/2019/04/11/vue/</id>
+    <published>2019-04-10T16:52:57.653Z</published>
+    <updated>2019-04-10T16:52:57.653Z</updated>
+    
+    <content type="html"><![CDATA[<ol><li>$代表vue暴露的实力属性与方法</li><li>@ 代表v-on 添建callback :代表v-bind添加双向绑定</li><li>computed基于依赖缓存和methods则不是</li><li>当computed需要定制的时候采用watch选项</li><li>data必须是一个函数，否则同类组件将共享状态</li><li>插槽用来向子组件传递内容</li><li></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;ol&gt;
+&lt;li&gt;$代表vue暴露的实力属性与方法&lt;/li&gt;
+&lt;li&gt;@ 代表v-on 添建callback :代表v-bind添加双向绑定&lt;/li&gt;
+&lt;li&gt;computed基于依赖缓存和methods则不是&lt;/li&gt;
+&lt;li&gt;当computed需要定制的时候采用watch选项
+      
+    
+    </summary>
+    
+    
+      <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
     
   </entry>
   
@@ -491,6 +472,30 @@
     
     
       <category term="java_fx" scheme="http://truejasonfans.github.io/tags/java-fx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Hexo 文章帮助指南</title>
+    <link href="http://truejasonfans.github.io/2016/10/18/instructions-of-hexo/"/>
+    <id>http://truejasonfans.github.io/2016/10/18/instructions-of-hexo/</id>
+    <published>2016-10-18T14:45:46.000Z</published>
+    <updated>2018-08-09T15:21:59.632Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一级标题"><a href="#一级标题" class="headerlink" title="一级标题"></a>一级标题</h1><p>一个#</p><h2 id="二级标题"><a href="#二级标题" class="headerlink" title="二级标题"></a>二级标题</h2><p>二个#</p><h3 id="三级标题"><a href="#三级标题" class="headerlink" title="三级标题"></a>三级标题</h3><p>三个#</p><h3 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h3><ul><li>1 (*开头）</li><li>2</li><li>3</li></ul><h4 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h4><ol><li>1 (数字加.)</li><li>2</li><li>3</li><li>4</li></ol><h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><blockquote><p>例如这样(&gt;)</p></blockquote><h4 id="插入连接"><a href="#插入连接" class="headerlink" title="插入连接"></a>插入连接</h4><p>[google] (<a href="http://www.google.com" target="_blank" rel="noopener">http://www.google.com</a>)</p><h4 id="插入图片"><a href="#插入图片" class="headerlink" title="插入图片"></a>插入图片</h4><p><img src="http://mouapp.com/Mou_128.png" alt="Mou icon"><br><a href="http://www.getcloudapp.com/" target="_blank" rel="noopener">http://www.getcloudapp.com/</a></p><p>####<br><strong>粗体是两个*包含</strong><br><em>斜体是一个包含</em></p><h4 id="代码框"><a href="#代码框" class="headerlink" title="代码框"></a>代码框</h4><p>需要用两个 ` 把中间的代码包裹起来</p><p><code>code</code></p><hr><p>分割线<br>分割线的语法只需要另起一行，连续输入三个星号 *** 即可。</p><hr><h1 id="hexo"><a href="#hexo" class="headerlink" title="hexo"></a>hexo</h1><p>hexo 部署新change</p><p>hexo clean</p><p>hexo generate</p><p>hexo deploy</p><p>hexo new”postName” #新建文章</p><p>hexo new page”pageName” #新建页面</p><p>hexo generate #生成静态页面至public目录</p><p>hexo server #开启预览访问端口（默认端口4000，’ctrl + c’关闭server）</p><p>hexo deploy #将.deploy目录部署到GitHub</p><p>hexo help # 查看帮助</p><p>hexo version #查看Hexo的版本</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;一级标题&quot;&gt;&lt;a href=&quot;#一级标题&quot; class=&quot;headerlink&quot; title=&quot;一级标题&quot;&gt;&lt;/a&gt;一级标题&lt;/h1&gt;&lt;p&gt;一个#&lt;/p&gt;
+&lt;h2 id=&quot;二级标题&quot;&gt;&lt;a href=&quot;#二级标题&quot; class=&quot;headerlink&quot; title
+      
+    
+    </summary>
+    
+    
+      <category term="hexo" scheme="http://truejasonfans.github.io/tags/hexo/"/>
     
   </entry>
   
