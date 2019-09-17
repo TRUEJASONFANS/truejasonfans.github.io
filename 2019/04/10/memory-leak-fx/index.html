@@ -78,7 +78,7 @@
 <link href="/css/main.css?v=5.1.1" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="zhong-wei" />
+  <meta name="keywords" content="java_fx," />
 
 
 
@@ -96,19 +96,20 @@
 
 
 
-<meta name="description" content="Root causeThe listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener,">
+<meta name="description" content="原因The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener, invalid">
+<meta name="keywords" content="java_fx">
 <meta property="og:type" content="article">
-<meta property="og:title" content="memory_leak_fx">
+<meta property="og:title" content="fx中的内存泄漏问题">
 <meta property="og:url" content="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/index.html">
 <meta property="og:site_name" content="Leisure Moment">
-<meta property="og:description" content="Root causeThe listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener,">
+<meta property="og:description" content="原因The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener, invalid">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/ChartToolTip.png">
 <meta property="og:image" content="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/RichChangeListener.png">
-<meta property="og:updated_time" content="2019-04-09T16:15:58.569Z">
+<meta property="og:updated_time" content="2019-04-10T16:52:57.652Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="memory_leak_fx">
-<meta name="twitter:description" content="Root causeThe listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener,">
+<meta name="twitter:title" content="fx中的内存泄漏问题">
+<meta name="twitter:description" content="原因The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded bya fx static root object.一些监听器诸如changeListener, invalid">
 <meta name="twitter:image" content="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/ChartToolTip.png">
 
 
@@ -144,7 +145,7 @@
 
 
 
-  <title>memory_leak_fx | Leisure Moment</title>
+  <title>fx中的内存泄漏问题 | Leisure Moment</title>
   
 
 
@@ -304,7 +305,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">memory_leak_fx</h1>
+          <h1 class="post-title" itemprop="name headline">fx中的内存泄漏问题</h1>
         
 
         <div class="post-meta">
@@ -326,6 +327,28 @@
             
           </span>
 
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">In</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/java-fx/" itemprop="url" rel="index">
+                    <span itemprop="name">java_fx</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
           
 
           
@@ -354,15 +377,11 @@
       
 
       
-        <h2 id="Root-cause"><a href="#Root-cause" class="headerlink" title="Root cause"></a>Root cause</h2><p>The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by<br>a fx static root object.<br>一些监听器诸如changeListener, invalidationListener , EventHandler 持有了UI 的强引用， 而这些监听起又被某些fx property 所持有， 而fx的某些property又被某些静态根对象所持有。<br>最后导致UI对象一直被持有而无法释放，从而导致了内存泄漏。</p>
-<h2 id="normal-case"><a href="#normal-case" class="headerlink" title="normal case"></a>normal case</h2><ol>
-<li><img src="/2019/04/10/memory-leak-fx/ChartToolTip.png" alt="leak_1"><br>引用链：component-&gt; MouseListener -&gt;持有 chartTooltipBehavior实例 -&gt; 持有FXToolTipHandler实例-&gt; 持有ToolTIp-&gt;… -&gt; 最终持有 AutoSelectioHeatMapPlotPoint (一个HeatMap block对象)<br>该component是JLightFrame的一个实例， 此处代码应该是chartDirector 基于swing的实现， 最终被disposer的records的根对象处理。</li>
-</ol>
+        <h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by<br>a fx static root object.<br>一些监听器诸如changeListener, invalidationListener , EventHandler 持有了UI 的强引用， 而这些监听起又被某些fx property 所持有， 而fx的某些property又被某些静态根对象所持有。<br>最后导致UI对象一直被持有而无法释放，从而导致了内存泄漏。</p>
+<h2 id="样例-normal-case"><a href="#样例-normal-case" class="headerlink" title="样例 normal case"></a>样例 normal case</h2><h3 id="ToolTip泄漏"><a href="#ToolTip泄漏" class="headerlink" title="ToolTip泄漏"></a>ToolTip泄漏</h3><p><img src="/2019/04/10/memory-leak-fx/ChartToolTip.png" alt="leak_1"><br>引用链：component-&gt; MouseListener -&gt;持有 chartTooltipBehavior实例 -&gt; 持有FXToolTipHandler实例-&gt; 持有ToolTIp-&gt;… -&gt; 最终持有 AutoSelectioHeatMapPlotPoint (一个HeatMap block对象)<br>该component是JLightFrame的一个实例， 此处代码应该是chartDirector 基于swing的实现， 最终被disposer的records的根对象处理。</p>
 <p>这里我们两种方案解决这个内存泄漏，<br>fix Disposer的源码， value对象使用weakReference存储<br>fix mouseLisenter，使上层 Ui 对象得到回收</p>
-<ol>
-<li><img src="/2019/04/10/memory-leak-fx/RichChangeListener.png" alt="leak2"><br>引用链：lamda 对象-&gt; 持有content-&gt;持有richChangeList-&gt; …. -&gt; PatternContrainCodeArea对象</li>
-</ol>
-<h2 id="How-to-get-rid-of-memeory-leak"><a href="#How-to-get-rid-of-memeory-leak" class="headerlink" title="How to get rid of memeory leak"></a>How to get rid of memeory leak</h2><ol>
+<h3 id="PatternConstrainCodeArea泄漏"><a href="#PatternConstrainCodeArea泄漏" class="headerlink" title="PatternConstrainCodeArea泄漏"></a>PatternConstrainCodeArea泄漏</h3><p><img src="/2019/04/10/memory-leak-fx/RichChangeListener.png" alt="leak2"><br>引用链：lamda 对象-&gt; 持有content-&gt;持有richChangeList-&gt; …. -&gt; PatternConstrainCodeArea对象</p>
+<h2 id="避免内存泄漏的建议"><a href="#避免内存泄漏的建议" class="headerlink" title="避免内存泄漏的建议"></a>避免内存泄漏的建议</h2><ol>
 <li>禁止使用匿名内部类表达式 （匿名内部类对象一定持有当前上下文this对象）</li>
 <li>使用lamda表达式或者静态内部类</li>
 <li>在lamda表达式以及静态内部类中 对于外部对象， 使用弱引用（尤其是UI）。<br>使用weakReference 封装需要在lambda表达式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;O&gt; <span class="function">InvalidationListener <span class="title">weak</span><span class="params">(O obj, Action2&lt;Observable, O&gt; listener)</span> </span>&#123;</span><br><span class="line">  WeakReference&lt;O&gt; weak = <span class="keyword">new</span> WeakReference&lt;&gt;(obj);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> InvalidationListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invalidated</span><span class="params">(Observable ob)</span> </span>&#123;</span><br><span class="line">      O object = weak.get();</span><br><span class="line">      <span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123; <span class="comment">// isDispose() == true</span></span><br><span class="line">        ob.removeListener(<span class="keyword">this</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 类似在swt 中 判断 isDispose() == false</span></span><br><span class="line">        listener.call(ob, object);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
@@ -382,6 +401,12 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/java-fx/" rel="tag"># java_fx</a>
+          
+        </div>
+      
 
       
       
@@ -391,8 +416,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/05/component_state/" rel="next" title="组件状态管理">
-                <i class="fa fa-chevron-left"></i> 组件状态管理
+              <a href="/2019/04/05/dynamic_proxy/" rel="next" title="AOP实践">
+                <i class="fa fa-chevron-left"></i> AOP实践
               </a>
             
           </div>
@@ -400,6 +425,10 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/04/11/component_state/" rel="prev" title="组件状态管理">
+                组件状态管理 <i class="fa fa-chevron-right"></i>
+              </a>
             
           </div>
         </div>
@@ -476,7 +505,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
@@ -540,7 +569,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Root-cause"><span class="nav-number">1.</span> <span class="nav-text">Root cause</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#normal-case"><span class="nav-number">2.</span> <span class="nav-text">normal case</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#How-to-get-rid-of-memeory-leak"><span class="nav-number">3.</span> <span class="nav-text">How to get rid of memeory leak</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#原因"><span class="nav-number">1.</span> <span class="nav-text">原因</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#样例-normal-case"><span class="nav-number">2.</span> <span class="nav-text">样例 normal case</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ToolTip泄漏"><span class="nav-number">2.1.</span> <span class="nav-text">ToolTip泄漏</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#PatternConstrainCodeArea泄漏"><span class="nav-number">2.2.</span> <span class="nav-text">PatternConstrainCodeArea泄漏</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#避免内存泄漏的建议"><span class="nav-number">3.</span> <span class="nav-text">避免内存泄漏的建议</span></a></li></ol></div>
             
 
           </div>

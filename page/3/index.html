@@ -282,7 +282,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2016/05/26/hexo-01/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/component_state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -301,7 +301,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2016/05/26/hexo-01/" itemprop="url">第一篇杂记吧</a></h1>
+                <a class="post-title-link" href="/2019/04/11/component_state/" itemprop="url">组件状态管理</a></h1>
         
 
         <div class="post-meta">
@@ -313,8 +313,169 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2016-05-26T23:48:41+08:00">
-                2016-05-26
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T00:52:57+08:00">
+                2019-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
+<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
+</li>
+<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
+</li>
+<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
+</li>
+</ol>
+<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
+<p>UI.control.addListener(e-&gt; updateModel())</p>
+<p>UI状态维护困难，UI难以复用。</p>
+<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
+<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
+<ol>
+<li><p>定义domain 均为property</p>
+</li>
+<li><p>view 与 viewModel 双向绑定</p>
+</li>
+<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
+</li>
+<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
+</li>
+<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
+</li>
+<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
+</ol>
+<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
+<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
+<li><p>通过相互领域模型的bind</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
+<li><p>scene graph 上节点</p>
+</li>
+<li><p>event bus</p>
+</li>
+</ol>
+<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
+<li>event bus</li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/10/memory-leak-fx/" itemprop="url">fx中的内存泄漏问题</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-10T00:10:28+08:00">
+                2019-04-10
               </time>
             
 
@@ -336,8 +497,8 @@
               
               
                 <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/个人生活/" itemprop="url" rel="index">
-                    <span itemprop="name">个人生活</span>
+                  <a href="/categories/java-fx/" itemprop="url" rel="index">
+                    <span itemprop="name">java_fx</span>
                   </a>
                 </span>
 
@@ -375,7 +536,172 @@
       
         
           
-            <p>好久没有记东西了， 那就随便写一点吧。我应该快两年没写过日志了，记得上一次还是写铜锣湾？<br>每次记点东西的时候，生活都变化有一点大，是我太懒散了。 最近上班的时候看了coolshell的博客，受益很多，<br>还是需要花些时间去沉淀自己的。我希望每一天都能成长一点，做技术这个东西就是要靠长期的积累与思考。</p>
+            <h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by<br>a fx static root object.<br>一些监听器诸如changeListener, invalidationListener , EventHandler 持有了UI 的强引用， 而这些监听起又被某些fx property 所持有， 而fx的某些property又被某些静态根对象所持有。<br>最后导致UI对象一直被持有而无法释放，从而导致了内存泄漏。</p>
+<h2 id="样例-normal-case"><a href="#样例-normal-case" class="headerlink" title="样例 normal case"></a>样例 normal case</h2><h3 id="ToolTip泄漏"><a href="#ToolTip泄漏" class="headerlink" title="ToolTip泄漏"></a>ToolTip泄漏</h3><p><img src="/2019/04/10/memory-leak-fx/ChartToolTip.png" alt="leak_1"><br>引用链：component-&gt; MouseListener -&gt;持有 chartTooltipBehavior实例 -&gt; 持有FXToolTipHandler实例-&gt; 持有ToolTIp-&gt;… -&gt; 最终持有 AutoSelectioHeatMapPlotPoint (一个HeatMap block对象)<br>该component是JLightFrame的一个实例， 此处代码应该是chartDirector 基于swing的实现， 最终被disposer的records的根对象处理。</p>
+<p>这里我们两种方案解决这个内存泄漏，<br>fix Disposer的源码， value对象使用weakReference存储<br>fix mouseLisenter，使上层 Ui 对象得到回收</p>
+<h3 id="PatternConstrainCodeArea泄漏"><a href="#PatternConstrainCodeArea泄漏" class="headerlink" title="PatternConstrainCodeArea泄漏"></a>PatternConstrainCodeArea泄漏</h3><p><img src="/2019/04/10/memory-leak-fx/RichChangeListener.png" alt="leak2"><br>引用链：lamda 对象-&gt; 持有content-&gt;持有richChangeList-&gt; …. -&gt; PatternConstrainCodeArea对象</p>
+<h2 id="避免内存泄漏的建议"><a href="#避免内存泄漏的建议" class="headerlink" title="避免内存泄漏的建议"></a>避免内存泄漏的建议</h2><ol>
+<li>禁止使用匿名内部类表达式 （匿名内部类对象一定持有当前上下文this对象）</li>
+<li>使用lamda表达式或者静态内部类</li>
+<li>在lamda表达式以及静态内部类中 对于外部对象， 使用弱引用（尤其是UI）。<br>使用weakReference 封装需要在lambda表达式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;O&gt; <span class="function">InvalidationListener <span class="title">weak</span><span class="params">(O obj, Action2&lt;Observable, O&gt; listener)</span> </span>&#123;</span><br><span class="line">  WeakReference&lt;O&gt; weak = <span class="keyword">new</span> WeakReference&lt;&gt;(obj);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> InvalidationListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invalidated</span><span class="params">(Observable ob)</span> </span>&#123;</span><br><span class="line">      O object = weak.get();</span><br><span class="line">      <span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123; <span class="comment">// isDispose() == true</span></span><br><span class="line">        ob.removeListener(<span class="keyword">this</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 类似在swt 中 判断 isDispose() == false</span></span><br><span class="line">        listener.call(ob, object);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+</ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/dynamic_proxy/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/05/dynamic_proxy/" itemprop="url">AOP实践</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
+                2019-04-05
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入,也就是运行期进行织入。</p>
+<p>   根据织入的时期，可以分为以下几个时期</p>
+<ul>
+<li>编译前</li>
+<li>编译后</li>
+<li>装载后</li>
+<li>运行期</li>
+</ul>
+<p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p>
+<p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p>
+<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol>
+<li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li>
+<li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理</p>
+<p>增强的代码就是：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>增强目的：重复使用pool中“可贵“资源RpcConnection</p>
+<h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
+<ol>
+<li>定义方法调用前回调对象<br>在dao真正调用前进行”版本检测”</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="2">
+<li>定义方法调用后回调对象<br>在dao完成写操作后，进行“写版本”操作</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ol start="3">
+<li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
+</ol>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="AOP编程思想"><a href="#AOP编程思想" class="headerlink" title="AOP编程思想"></a>AOP编程思想</h3><p>OOP的有效补充（引用于知乎）</p>
+<ul>
+<li>面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。</li>
+<li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
+<li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
+</ul>
 
           
         
@@ -415,7 +741,7 @@
 
   
   <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span>
+    <a class="extend prev" rel="prev" href="/page/2/"><i class="fa fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/4/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -461,7 +787,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>

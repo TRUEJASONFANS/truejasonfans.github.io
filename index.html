@@ -282,7 +282,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/10/memory-leak-fx/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/28/RxJs operators/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -301,7 +301,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/04/10/memory-leak-fx/" itemprop="url">memory_leak_fx</a></h1>
+                <a class="post-title-link" href="/2019/04/28/RxJs operators/" itemprop="url">Untitled</a></h1>
         
 
         <div class="post-meta">
@@ -313,8 +313,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-10T00:10:28+08:00">
-                2019-04-10
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-28T15:36:51+08:00">
+                2019-04-28
               </time>
             
 
@@ -353,18 +353,129 @@
       
         
           
-            <h2 id="Root-cause"><a href="#Root-cause" class="headerlink" title="Root cause"></a>Root cause</h2><p>The listener like changeListener, invalidationListener, EventHandler hold the strong reference of UI. And then somehow finally will be holded by<br>a fx static root object.<br>一些监听器诸如changeListener, invalidationListener , EventHandler 持有了UI 的强引用， 而这些监听起又被某些fx property 所持有， 而fx的某些property又被某些静态根对象所持有。<br>最后导致UI对象一直被持有而无法释放，从而导致了内存泄漏。</p>
-<h2 id="normal-case"><a href="#normal-case" class="headerlink" title="normal case"></a>normal case</h2><ol>
-<li><img src="/2019/04/10/memory-leak-fx/ChartToolTip.png" alt="leak_1"><br>引用链：component-&gt; MouseListener -&gt;持有 chartTooltipBehavior实例 -&gt; 持有FXToolTipHandler实例-&gt; 持有ToolTIp-&gt;… -&gt; 最终持有 AutoSelectioHeatMapPlotPoint (一个HeatMap block对象)<br>该component是JLightFrame的一个实例， 此处代码应该是chartDirector 基于swing的实现， 最终被disposer的records的根对象处理。</li>
-</ol>
-<p>这里我们两种方案解决这个内存泄漏，<br>fix Disposer的源码， value对象使用weakReference存储<br>fix mouseLisenter，使上层 Ui 对象得到回收</p>
-<ol>
-<li><img src="/2019/04/10/memory-leak-fx/RichChangeListener.png" alt="leak2"><br>引用链：lamda 对象-&gt; 持有content-&gt;持有richChangeList-&gt; …. -&gt; PatternContrainCodeArea对象</li>
-</ol>
-<h2 id="How-to-get-rid-of-memeory-leak"><a href="#How-to-get-rid-of-memeory-leak" class="headerlink" title="How to get rid of memeory leak"></a>How to get rid of memeory leak</h2><ol>
-<li>禁止使用匿名内部类表达式 （匿名内部类对象一定持有当前上下文this对象）</li>
-<li>使用lamda表达式或者静态内部类</li>
-<li>在lamda表达式以及静态内部类中 对于外部对象， 使用弱引用（尤其是UI）。<br>使用weakReference 封装需要在lambda表达式<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;O&gt; <span class="function">InvalidationListener <span class="title">weak</span><span class="params">(O obj, Action2&lt;Observable, O&gt; listener)</span> </span>&#123;</span><br><span class="line">  WeakReference&lt;O&gt; weak = <span class="keyword">new</span> WeakReference&lt;&gt;(obj);</span><br><span class="line">  <span class="keyword">return</span> <span class="keyword">new</span> InvalidationListener() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">invalidated</span><span class="params">(Observable ob)</span> </span>&#123;</span><br><span class="line">      O object = weak.get();</span><br><span class="line">      <span class="keyword">if</span> (object == <span class="keyword">null</span>) &#123; <span class="comment">// isDispose() == true</span></span><br><span class="line">        ob.removeListener(<span class="keyword">this</span>);</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123; <span class="comment">// 类似在swt 中 判断 isDispose() == false</span></span><br><span class="line">        listener.call(ob, object);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+            <h1 id="RxJs-operators"><a href="#RxJs-operators" class="headerlink" title="RxJs operators"></a>RxJs operators</h1>
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/18/Token/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/18/Token/" itemprop="url">Untitled</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-18T22:58:42+08:00">
+                2019-04-18
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h1 id="Token"><a href="#Token" class="headerlink" title="Token"></a>Token</h1><ol>
+<li>客户端使用用户名跟密码请求登录</li>
+<li>服务端收到请求，去验证用户名与密码</li>
+<li>验证成功后，服务端会签发一个 Token，再把这个 Token 发送给客户端<br>客户端收到 Token 以后可以把它存储起来，比如放在 Cookie 里或者 Local Storage 里<br>3.客户端每次向服务端请求资源的时候需要带着服务端签发的 Token<br>服务端收到请求，然后去验证客户端请求里面带着的 Token，如果验证成功，就向客户端返回请求的数据</li>
 </ol>
 
           
@@ -414,7 +525,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/component_state/">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/jprofile_experence/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="zhong-wei">
@@ -433,7 +544,7 @@
         
           <h1 class="post-title" itemprop="name headline">
                 
-                <a class="post-title-link" href="/2019/04/05/component_state/" itemprop="url">组件状态管理</a></h1>
+                <a class="post-title-link" href="/2019/04/11/jprofile_experence/" itemprop="url">jprofile 使用经验</a></h1>
         
 
         <div class="post-meta">
@@ -445,8 +556,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:35:17+08:00">
-                2019-04-05
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T01:00:04+08:00">
+                2019-04-11
               </time>
             
 
@@ -485,1128 +596,7 @@
       
         
           
-            <h2 id="何谓组件和容器"><a href="#何谓组件和容器" class="headerlink" title="何谓组件和容器"></a>何谓组件和容器</h2><ol>
-<li><p>一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。<br>可以理解纯组件，它的表现形式只有prop参数决定。 一旦其完成构造，应该是不可变的。</p>
-</li>
-<li><p>一个容器可以理解为UI状态管理的最小单位， 它与业务逻辑息息相关。<br>可以理解管理组件的组件。</p>
-</li>
-<li><p>GUI 应用应该由一个个组件像搭积木形成的一个个容器构成</p>
-</li>
-</ol>
-<h2 id="无状态管理-MV"><a href="#无状态管理-MV" class="headerlink" title="无状态管理 (MV)"></a>无状态管理 (MV)</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">updateUI ( model -&gt; UI)  <span class="comment">// load</span></span><br><span class="line"></span><br><span class="line">updateModel ( UI -&gt; model) <span class="comment">// save</span></span><br></pre></td></tr></table></figure>
-<p>UI.control.addListener(e-&gt; updateModel())</p>
-<p>UI状态维护困难，UI难以复用。</p>
-<h2 id="Binding机制view-model-MVVM"><a href="#Binding机制view-model-MVVM" class="headerlink" title="Binding机制view model (MVVM)"></a>Binding机制view model (MVVM)</h2><p><img src="http://www.ruanyifeng.com/blogimg/asset/2015/bg2015020110.png" alt=""></p>
-<p>view与view model 双向绑定（data-binding）：View的变动，自动反映在 ViewModel</p>
-<ol>
-<li><p>定义domain 均为property</p>
-</li>
-<li><p>view 与 viewModel 双向绑定</p>
-</li>
-<li><p>view的变动仅反映在view model上(具体表现为property的变化)，不需要通知其他view</p>
-</li>
-<li><p>只有在通过property 达不到的情况下才使用event bus.</p>
-</li>
-<li><p>双向绑定基于弱引用，Binding对象不会保持有双方的强引用，只有两个对象的弱引用<br>你变我也变，我变你也变</p>
-</li>
-<li>A单向bind B, 实际上是监听源B 对象添加一个监听器，该监听器强引用A，当B变化时，通知监听者A</li>
-</ol>
-<p>故这里需要使用weak Listener， 防止由于data长期不销毁而导致view不销毁。</p>
-<h3 id="java-fx中一切变化皆表现为property的变化"><a href="#java-fx中一切变化皆表现为property的变化" class="headerlink" title="java fx中一切变化皆表现为property的变化"></a>java fx中一切变化皆表现为property的变化</h3><h2 id="组件间通信"><a href="#组件间通信" class="headerlink" title="组件间通信"></a>组件间通信</h2><ol>
-<li><p>通过相互领域模型的bind</p>
-</li>
-<li><p>event bus</p>
-</li>
-</ol>
-<h3 id="父子组件通信"><a href="#父子组件通信" class="headerlink" title="父子组件通信"></a>父子组件通信</h3><ol>
-<li><p>scene graph 上节点</p>
-</li>
-<li><p>event bus</p>
-</li>
-</ol>
-<h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
-<li>event bus</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/dynamic_proxy/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/05/dynamic_proxy/" itemprop="url">AOP实践</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
-                2019-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="AOP"><a href="#AOP" class="headerlink" title="AOP"></a>AOP</h2><p>   面向切面编程实际上做一个代码增强， AOP像OOP一样是一种编程范式。 我们不光可以对方法进行增强，<br>也可以对构造函数，字段进行增强。(例如使用aspect J). 这里我只关注方法执行过程前后的织入,也就是运行期进行织入。</p>
-<p>   根据织入的时期，可以分为以下几个时期</p>
-<ul>
-<li>编译前</li>
-<li>编译后</li>
-<li>装载后</li>
-<li>运行期</li>
-</ul>
-<p>比较有名的Spring AOP 是在运行期实现代码增强。<br>Spring AOP 基于以下两种实现，当代理对象实现某个接口时候会优先采用jdk动态代理， 如果代理对象无任何接口实现则基于CGlib 实现动态代理</p>
-<p><img src="http://www.baeldung.com/wp-content/uploads/2017/10/springaop-process.png" alt=""> </p>
-<h2 id="动态代理"><a href="#动态代理" class="headerlink" title="动态代理"></a>动态代理</h2><h3 id="基于JDK的动态代理"><a href="#基于JDK的动态代理" class="headerlink" title="基于JDK的动态代理"></a>基于JDK的动态代理</h3><ol>
-<li>定义一个回调类定义拦截后的方法回调对象（implement InvocationHandler)</li>
-<li>使用Proxy.newProxyInstance() 生成代理对象。该方法有三个参数， 第一个是所属的classloader.<br>第二个是该代理对象实现的接口的数组， 第三个是1定义的回调对象</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">AppClientProxyHandler</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> AppClient <span class="title">bind</span><span class="params">(AppClientPool pool)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">this</span>.pool = pool;</span><br><span class="line">    <span class="keyword">return</span> (AppClient) (Proxy.newProxyInstance(</span><br><span class="line">        pool.getClass().getClassLoader(), <span class="keyword">new</span> Class&lt;?&gt;[] &#123;AppClient.class&#125;, <span class="keyword">this</span>));    </span><br><span class="line">  &#125;</span><br><span class="line">  <span class="meta">@override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">final</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>AppClientProxyHandler 动态代理 AppClient 接口，对于applient 接口的调用都会被代理</p>
-<p>增强的代码就是：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">RpcConnection&lt;D4cRpcClient, CommD4cService.Client&gt; conn = pool.getAvailableConnnection();</span><br><span class="line"> <span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="keyword">return</span> call(method, conn.getInterfaces(), args);</span><br><span class="line"> &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    Throwable rootCause = e.getCause();</span><br><span class="line">    <span class="keyword">if</span> (rootCause <span class="keyword">instanceof</span> AppClientException || rootCause <span class="keyword">instanceof</span> UtilException) &#123;</span><br><span class="line">        <span class="keyword">throw</span> rootCause;</span><br><span class="line">      &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        LOGGER.error(e.getMessage(), e);</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> ServerFail(<span class="string">"Fatal error during call app service"</span>, e);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; <span class="keyword">finally</span> &#123;</span><br><span class="line">   	pool.pushBack(conn);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>增强目的：重复使用pool中“可贵“资源RpcConnection</p>
-<h3 id="基于CGLib方案"><a href="#基于CGLib方案" class="headerlink" title="基于CGLib方案"></a>基于CGLib方案</h3><p>对于每个DAO调用之前做方法拦截回调, 检查版本是否符合预期，不符合预期不加载， 类似于权限检查。<br>事实上对于sesion 的权限检查也应该基于AOP去做。 对于版本更新，则在sava成功之后去做。</p>
-<ol>
-<li>定义方法调用前回调对象<br>在dao真正调用前进行”版本检测”</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionCheckHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">	<span class="meta">@Override</span></span><br><span class="line">	<span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    handleBefore(method, args);<span class="comment">// version check</span></span><br><span class="line">    <span class="keyword">return</span> proxy.invokeSuper(obj, args);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="2">
-<li>定义方法调用后回调对象<br>在dao完成写操作后，进行“写版本”操作</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">VersionSaveHandler</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">  <span class="meta">@Override</span></span><br><span class="line">  <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">    Object object = proxy.invokeSuper(obj, args);</span><br><span class="line">    handleAfter(method, args);<span class="comment">// version save</span></span><br><span class="line">    <span class="keyword">return</span> object;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ol start="3">
-<li>对于原来的DAO进行”代理”增强, 生成新的DAO 对象：</li>
-</ol>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ProxyFactory</span> </span>&#123;</span><br><span class="line">   <span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(T targetObject, List&lt;MethodInterceptor&gt; handlers, CallbackFilter filter)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (!handlers.isEmpty()) &#123;</span><br><span class="line">      Enhancer enhancer = <span class="keyword">new</span> Enhancer();</span><br><span class="line">      enhancer.setSuperclass(targetObject.getClass());</span><br><span class="line">      List&lt;Callback&gt; callbacks = Lists.newArrayList();</span><br><span class="line">      <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; handlers.size(); i++) &#123;</span><br><span class="line">        callbacks.add(handlers.get(i));</span><br><span class="line">      &#125;</span><br><span class="line">      enhancer.setCallbacks(callbacks.toArray(<span class="keyword">new</span> Callback[callbacks.size()]));</span><br><span class="line">      <span class="keyword">if</span> (filter != <span class="keyword">null</span>) &#123;</span><br><span class="line">        enhancer.setCallbackFilter(filter);</span><br><span class="line">      &#125;</span><br><span class="line">      <span class="keyword">return</span> (T) enhancer.create();</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">      <span class="keyword">return</span> targetObject;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="AOP编程思想"><a href="#AOP编程思想" class="headerlink" title="AOP编程思想"></a>AOP编程思想</h3><p>OOP的有效补充（引用于知乎）</p>
-<ul>
-<li>面向对象(OOP)引入了继承、多态、封装，将系统的业务功能按照模块划分，每个模块用一个或多个类来表示。</li>
-<li>而对于一些系统功能，无法使用OOP的思想来实现它们。这些系统功能往往穿插在业务功能的各处，和业务代码耦合在一起；而且系统功能往往会被重复使用，这就导致了模块不利于复用，这就是使用OOP实现系统功能的弊端。 </li>
-<li>AOP即为面向切面编程，它把系统需求按照功能分门归类，把它们封装在一个个切面中，然后再指定这些系统功能往业务功能中织入的规则。最后由第三方机构根据你指定的织入规则，将系统功能整合到业务功能中。</li>
-</ul>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/重构与模式1/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/05/重构与模式1/" itemprop="url">重构与模式读书笔记1</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
-                2019-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="写这本书的原因"><a href="#写这本书的原因" class="headerlink" title="写这本书的原因"></a>写这本书的原因</h2><ol>
-<li>过度设计</li>
-<li>设计不足</li>
-<li>测试驱动开发和持续重构 两个重要实践降低过度设计和设计不足的几率</li>
-<li>重构与模式 密不可分的关系：在许多重构方法中，模式有助于改进设计。 许多时候我们通过重构实现模式，或者趋向模式进行重构。模式与重构之间存在天然联系。模式是你想到达的目的地，而重构则是从其他地方抵达这个目的地的条条道路。 </li>
-<li>渐进式设计 =&gt; 重构实现模式或者重构趋向模式</li>
-</ol>
-<h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ol>
-<li>使新代码的增加更容易 （降低耦合）</li>
-<li>改善既有的代码的设计 </li>
-<li>对代码的理解更透彻 </li>
-<li>提高编程的趣味性 （减少dirty work，比如降低处理check in冲突的巨类的存在）</li>
-</ol>
-<h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>何谓模式？<br>每个模式是由三个部分组成的规则：</p>
-<ol>
-<li>某一个环境</li>
-<li>一个问题</li>
-<li>解决问题方案</li>
-</ol>
-<h3 id="通过重构实现-趋向和去除模式"><a href="#通过重构实现-趋向和去除模式" class="headerlink" title="通过重构实现,趋向和去除模式"></a>通过重构实现,趋向和去除模式</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor1.png" alt=""><br><img src="/2019/04/05/重构与模式1/pattern_refactor2.png" alt=""></p>
-<h3 id="模式是不是使代码变得更复杂"><a href="#模式是不是使代码变得更复杂" class="headerlink" title="模式是不是使代码变得更复杂"></a>模式是不是使代码变得更复杂</h3><ol>
-<li>缺乏对模式的认知</li>
-<li>进一步重构十分必要</li>
-<li>谨慎采用模式的预先设计</li>
-</ol>
-<h3 id="代码坏味"><a href="#代码坏味" class="headerlink" title="代码坏味"></a>代码坏味</h3><ol>
-<li>重复</li>
-<li>不清晰</li>
-<li>复杂</li>
-</ol>
-<p><img src="/2019/04/05/重构与模式1/pattern_refactor3.png" alt=""><br><img src="/2019/04/05/重构与模式1/pattern_refactor4.png" alt=""></p>
-<h3 id="重复代码"><a href="#重复代码" class="headerlink" title="重复代码"></a>重复代码</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor5.PNG" alt=""></p>
-<h3 id="过长函数"><a href="#过长函数" class="headerlink" title="过长函数"></a>过长函数</h3><ol>
-<li>避免重复代码</li>
-<li>提高阅读性</li>
-<li>&lt;= 10 行以内</li>
-<li>小函数串起来几乎对性能无影响， 对条件分支过长的 可以考虑用command 模式， strategy等模式来替换</li>
-</ol>
-<h3 id="条件逻辑太复杂"><a href="#条件逻辑太复杂" class="headerlink" title="条件逻辑太复杂"></a>条件逻辑太复杂</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor6.PNG" alt=""></p>
-<h3 id="基本类型偏执"><a href="#基本类型偏执" class="headerlink" title="基本类型偏执"></a>基本类型偏执</h3><ol>
-<li>不要用基本类型值来控制类的逻辑，应该考虑用类替换类型代码重构.这样将得到类型安全而且能够扩展新行为的代码.</li>
-</ol>
-<h3 id="不太恰当的暴露"><a href="#不太恰当的暴露" class="headerlink" title="不太恰当的暴露"></a>不太恰当的暴露</h3><ol>
-<li>利用工厂方法或 工厂模式 隐藏类的构造过程中的复杂逻辑</li>
-</ol>
-<h3 id="解决方案蔓延"><a href="#解决方案蔓延" class="headerlink" title="解决方案蔓延"></a>解决方案蔓延</h3><p><img src="/2019/04/05/重构与模式1/pattern_refactor7.PNG" alt=""></p>
-<h3 id="异曲同工的类"><a href="#异曲同工的类" class="headerlink" title="异曲同工的类"></a>异曲同工的类</h3>
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/05/content-type与spring 后数据/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/05/content-type与spring 后数据/" itemprop="url">content-type 与spring boot 控制器的值注入关系</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-05T01:28:14+08:00">
-                2019-04-05
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p>
-<p>var params = ‘orem=ipsum&amp;name=binny’;</p>
-<h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/nginx/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/09/nginx/" itemprop="url">nginx</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T23:26:07+08:00">
-                2018-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>brew install nginx</p>
-<h1 id="命令集"><a href="#命令集" class="headerlink" title="命令集"></a>命令集</h1><ol>
-<li>启动 nginx</li>
-<li></li>
-</ol>
-<h1 id="配置"><a href="#配置" class="headerlink" title="配置"></a>配置</h1><p>nginx -t 找到配置文件的位置</p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/vue/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/09/vue/" itemprop="url">vue笔记</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T23:21:59+08:00">
-                2018-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>$代表vue暴露的实力属性与方法</li>
-<li>@ 代表v-on 添建callback :代表v-bind添加双向绑定</li>
-<li>computed基于依赖缓存和methods则不是</li>
-<li>当computed需要定制的时候采用watch选项</li>
-<li>data必须是一个函数，否则同类组件将共享状态</li>
-<li>插槽用来向子组件传递内容</li>
-<li></li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/08/09/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/08/09/hello-world/" itemprop="url">Hello World</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-08-09T23:21:59+08:00">
-                2018-08-09
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2018/04/02/deploy-flask-on-mac-0/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/04/02/deploy-flask-on-mac-0/" itemprop="url">在mac上部署flask+mod_wsgi+apache</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2018-04-02T21:32:47+08:00">
-                2018-04-02
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <ol>
-<li>安装mac brew工具，brew -v 命令测试</li>
-<li>brew install apache2, 安装完会注意log message, 会显示配置文件http.conf文件在哪，我是在/usr/local/etc/httpd/httpd.conf</li>
-<li><p>安装mod_wsgi模块<br>a. ./configure<br>b. make<br>c. make install</p>
-</li>
-<li><p>修改httpd.conf,配置虚拟主机映射到本地。</p>
-</li>
-<li>lsof -i 端口号 检查端口号是否被占用</li>
-</ol>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2017/12/24/frontQuestions/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2017/12/24/frontQuestions/" itemprop="url">前端学习中的困惑</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2017-12-24T15:18:27+08:00">
-                2017-12-24
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h1 id="Questions"><a href="#Questions" class="headerlink" title="Questions"></a>Questions</h1><ol>
-<li><p>为什么vue打包的后静态资源通过浏览器打开是空白页：<a href="https://www.zhihu.com/question/62164638/answer/196212610" title="为什么vue打包后出现后 在浏览器上打开的是空白页?" target="_blank" rel="noopener">https://www.zhihu.com/question/62164638/answer/196212610</a></p>
-</li>
-<li><p>为什么在某机起的http服务，同一子网内的机器访问不了？<br>通常情况下是端口和host的问题，这里注意不能把Host设置为127.0.0.1(设置为回环地址。该地址指电脑本身，主要预留测试本机的TCP/IP协议是否正常。只要使用这个地址发送数据，则数据包不会出现在网络传输过程中）。绑定为0.0.0.0，在服务器中，0.0.0.0指的是本机上的所有IPV4地址，如果一个主机有两个IP地址，192.168.1.1 和 10.1.2.1，并且该主机上的一个服务监听的地址是0.0.0.0,那么通过两个ip地址都能够访问该服务。</p>
-</li>
-<li><p>webpack加载动态图片资源<br>利用require.context 会在当前创建一个资源上下文，相关资源都会被最终打包。</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> context = <span class="built_in">require</span>.context(<span class="string">'../images'</span>, <span class="literal">true</span>,  /^\.\<span class="comment">//)</span></span><br><span class="line"><span class="keyword">let</span> fileName;</span><br><span class="line"><span class="keyword">let</span> img = context(fileNmae)</span><br></pre></td></tr></table></figure></li>
-</ol>
+            <p>incoming reference: 这个对象类型被哪些外部对象引用<br>outgoing reference: 查看这个对象类型持有的外部对象引用</p>
 
           
         
@@ -1646,7 +636,7 @@
 
   
   <nav class="pagination">
-    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="page-number" href="/page/3/">3</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/">8</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
   </nav>
 
 
@@ -1692,7 +682,7 @@
           
             <div class="site-state-item site-state-posts">
               <a href="/archives/">
-                <span class="site-state-item-count">21</span>
+                <span class="site-state-item-count">24</span>
                 <span class="site-state-item-name">posts</span>
               </a>
             </div>
