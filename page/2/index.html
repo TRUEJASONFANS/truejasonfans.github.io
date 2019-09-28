@@ -410,128 +410,6 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/content-type与spring_controller_model/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="zhong-wei">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/uploads/kakaxi.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Leisure Moment">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2019/04/11/content-type与spring_controller_model/" itemprop="url">content-type 与spring boot 控制器的值注入关系</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">Posted on</span>
-              
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T00:52:57+08:00">
-                2019-04-11
-              </time>
-            
-
-            
-
-            
-          </span>
-
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
-        </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p>
-<p>var params = ‘orem=ipsum&amp;name=binny’;</p>
-<h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/component_state/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -645,6 +523,128 @@
 <h3 id="旁系组件通信"><a href="#旁系组件通信" class="headerlink" title="旁系组件通信"></a>旁系组件通信</h3><ol>
 <li>event bus</li>
 </ol>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://truejasonfans.github.io/2019/04/11/content-type与spring_controller_model/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="zhong-wei">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/uploads/kakaxi.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Leisure Moment">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2019/04/11/content-type与spring_controller_model/" itemprop="url">content-type 与spring boot 控制器的值注入关系</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-11T00:52:57+08:00">
+                2019-04-11
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p>
+<p>var params = ‘orem=ipsum&amp;name=binny’;</p>
+<h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>
 
           
         
