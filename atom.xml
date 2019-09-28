@@ -71,9 +71,9 @@
     <link href="http://truejasonfans.github.io/2019/04/11/%E9%87%8D%E6%9E%84%E4%B8%8E%E6%A8%A1%E5%BC%8F1/"/>
     <id>http://truejasonfans.github.io/2019/04/11/重构与模式1/</id>
     <published>2019-04-10T16:52:57.653Z</published>
-    <updated>2019-09-28T13:12:16.351Z</updated>
+    <updated>2019-09-28T13:17:06.446Z</updated>
     
-    <content type="html"><![CDATA[<h2 id="写这本书的原因"><a href="#写这本书的原因" class="headerlink" title="写这本书的原因"></a>写这本书的原因</h2><ol><li>过度设计</li><li>设计不足</li><li>测试驱动开发和持续重构 两个重要实践降低过度设计和设计不足的几率</li><li>重构与模式 密不可分的关系：在许多重构方法中，模式有助于改进设计。 许多时候我们通过重构实现模式，或者趋向模式进行重构。模式与重构之间存在天然联系。模式是你想到达的目的地，而重构则是从其他地方抵达这个目的地的条条道路。 </li><li>渐进式设计 =&gt; 重构实现模式或者重构趋向模式</li></ol><h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ol><li>使新代码的增加更容易 （降低耦合）</li><li>改善既有的代码的设计 </li><li>对代码的理解更透彻 </li><li>提高编程的趣味性 （减少dirty work，比如降低处理check in冲突的巨类的存在）</li></ol><h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>何谓模式？<br>每个模式是由三个部分组成的规则：</p><ol><li>某一个环境</li><li>一个问题</li><li>解决问题方案</li></ol><h3 id="通过重构实现-趋向和去除模式"><a href="#通过重构实现-趋向和去除模式" class="headerlink" title="通过重构实现,趋向和去除模式"></a>通过重构实现,趋向和去除模式</h3><p><img src="/images/pattern_refactor1.png" alt=""><br><img src="/images/pattern_refactor2.png" alt=""></p><h3 id="模式是不是使代码变得更复杂"><a href="#模式是不是使代码变得更复杂" class="headerlink" title="模式是不是使代码变得更复杂"></a>模式是不是使代码变得更复杂</h3><ol><li>缺乏对模式的认知</li><li>进一步重构十分必要</li><li>谨慎采用模式的预先设计</li></ol><h3 id="代码坏味"><a href="#代码坏味" class="headerlink" title="代码坏味"></a>代码坏味</h3><ol><li>重复</li><li>不清晰</li><li>复杂</li></ol><p><img src="/images/pattern_refactor3.png" alt=""><br><img src="/images/pattern_refactor4.png" alt=""></p><h3 id="重复代码"><a href="#重复代码" class="headerlink" title="重复代码"></a>重复代码</h3><p><img src="/images/pattern_refactor5.PNG" alt=""></p><h3 id="过长函数"><a href="#过长函数" class="headerlink" title="过长函数"></a>过长函数</h3><ol><li>避免重复代码</li><li>提高阅读性</li><li>&lt;= 10 行以内</li><li>小函数串起来几乎对性能无影响， 对条件分支过长的 可以考虑用command 模式， strategy等模式来替换</li></ol><h3 id="条件逻辑太复杂"><a href="#条件逻辑太复杂" class="headerlink" title="条件逻辑太复杂"></a>条件逻辑太复杂</h3><p><img src="/2019/04/11/重构与模式1/pattern_refactor6.PNG" alt=""></p><h3 id="基本类型偏执"><a href="#基本类型偏执" class="headerlink" title="基本类型偏执"></a>基本类型偏执</h3><ol><li>不要用基本类型值来控制类的逻辑，应该考虑用类替换类型代码重构.这样将得到类型安全而且能够扩展新行为的代码.</li></ol><h3 id="不太恰当的暴露"><a href="#不太恰当的暴露" class="headerlink" title="不太恰当的暴露"></a>不太恰当的暴露</h3><ol><li>利用工厂方法或 工厂模式 隐藏类的构造过程中的复杂逻辑</li></ol><h3 id="解决方案蔓延"><a href="#解决方案蔓延" class="headerlink" title="解决方案蔓延"></a>解决方案蔓延</h3><p><img src="/images/pattern_refactor7.PNG" alt=""></p><h3 id="异曲同工的类"><a href="#异曲同工的类" class="headerlink" title="异曲同工的类"></a>异曲同工的类</h3>]]></content>
+    <content type="html"><![CDATA[<h2 id="写这本书的原因"><a href="#写这本书的原因" class="headerlink" title="写这本书的原因"></a>写这本书的原因</h2><ol><li>过度设计</li><li>设计不足</li><li>测试驱动开发和持续重构 两个重要实践降低过度设计和设计不足的几率</li><li>重构与模式 密不可分的关系：在许多重构方法中，模式有助于改进设计。 许多时候我们通过重构实现模式，或者趋向模式进行重构。模式与重构之间存在天然联系。模式是你想到达的目的地，而重构则是从其他地方抵达这个目的地的条条道路。 </li><li>渐进式设计 =&gt; 重构实现模式或者重构趋向模式</li></ol><h2 id="重构"><a href="#重构" class="headerlink" title="重构"></a>重构</h2><h3 id="目的"><a href="#目的" class="headerlink" title="目的"></a>目的</h3><ol><li>使新代码的增加更容易 （降低耦合）</li><li>改善既有的代码的设计 </li><li>对代码的理解更透彻 </li><li>提高编程的趣味性 （减少dirty work，比如降低处理check in冲突的巨类的存在）</li></ol><h2 id="模式"><a href="#模式" class="headerlink" title="模式"></a>模式</h2><p>何谓模式？<br>每个模式是由三个部分组成的规则：</p><ol><li>某一个环境</li><li>一个问题</li><li>解决问题方案</li></ol><h3 id="通过重构实现-趋向和去除模式"><a href="#通过重构实现-趋向和去除模式" class="headerlink" title="通过重构实现,趋向和去除模式"></a>通过重构实现,趋向和去除模式</h3><p><img src="/images/pattern_refactor1.png" alt=""><br><img src="/images/pattern_refactor2.png" alt=""></p><h3 id="模式是不是使代码变得更复杂"><a href="#模式是不是使代码变得更复杂" class="headerlink" title="模式是不是使代码变得更复杂"></a>模式是不是使代码变得更复杂</h3><ol><li>缺乏对模式的认知</li><li>进一步重构十分必要</li><li>谨慎采用模式的预先设计</li></ol><h3 id="代码坏味"><a href="#代码坏味" class="headerlink" title="代码坏味"></a>代码坏味</h3><ol><li>重复</li><li>不清晰</li><li>复杂</li></ol><p><img src="/images/pattern_refactor3.png" alt=""><br><img src="/images/pattern_refactor4.png" alt=""></p><h3 id="重复代码"><a href="#重复代码" class="headerlink" title="重复代码"></a>重复代码</h3><p><img src="/images/pattern_refactor5.PNG" alt=""></p><h3 id="过长函数"><a href="#过长函数" class="headerlink" title="过长函数"></a>过长函数</h3><ol><li>避免重复代码</li><li>提高阅读性</li><li>&lt;= 10 行以内</li><li>小函数串起来几乎对性能无影响， 对条件分支过长的 可以考虑用command 模式， strategy等模式来替换</li></ol><h3 id="条件逻辑太复杂"><a href="#条件逻辑太复杂" class="headerlink" title="条件逻辑太复杂"></a>条件逻辑太复杂</h3><p><img src="/images/pattern_refactor6.PNG" alt=""></p><h3 id="基本类型偏执"><a href="#基本类型偏执" class="headerlink" title="基本类型偏执"></a>基本类型偏执</h3><ol><li>不要用基本类型值来控制类的逻辑，应该考虑用类替换类型代码重构.这样将得到类型安全而且能够扩展新行为的代码.</li></ol><h3 id="不太恰当的暴露"><a href="#不太恰当的暴露" class="headerlink" title="不太恰当的暴露"></a>不太恰当的暴露</h3><ol><li>利用工厂方法或 工厂模式 隐藏类的构造过程中的复杂逻辑</li></ol><h3 id="解决方案蔓延"><a href="#解决方案蔓延" class="headerlink" title="解决方案蔓延"></a>解决方案蔓延</h3><p><img src="/images/pattern_refactor7.PNG" alt=""></p><h3 id="异曲同工的类"><a href="#异曲同工的类" class="headerlink" title="异曲同工的类"></a>异曲同工的类</h3>]]></content>
     
     <summary type="html">
     
@@ -122,6 +122,29 @@
   </entry>
   
   <entry>
+    <title>content-type 与spring boot 控制器的值注入关系</title>
+    <link href="http://truejasonfans.github.io/2019/04/11/content-type%E4%B8%8Espring_controller_model/"/>
+    <id>http://truejasonfans.github.io/2019/04/11/content-type与spring_controller_model/</id>
+    <published>2019-04-10T16:52:57.651Z</published>
+    <updated>2019-04-10T16:52:57.651Z</updated>
+    
+    <content type="html"><![CDATA[<h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p><p>var params = ‘orem=ipsum&amp;name=binny’;</p><h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation&quot;&gt;&lt;a href=&quot;#content-type-‘application-x-www-form-urlencod
+      
+    
+    </summary>
+    
+    
+      <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
+    
+  </entry>
+  
+  <entry>
     <title>组件状态管理</title>
     <link href="http://truejasonfans.github.io/2019/04/11/component_state/"/>
     <id>http://truejasonfans.github.io/2019/04/11/component_state/</id>
@@ -136,29 +159,6 @@
       
         &lt;h2 id=&quot;何谓组件和容器&quot;&gt;&lt;a href=&quot;#何谓组件和容器&quot; class=&quot;headerlink&quot; title=&quot;何谓组件和容器&quot;&gt;&lt;/a&gt;何谓组件和容器&lt;/h2&gt;&lt;ol&gt;
 &lt;li&gt;&lt;p&gt;一个组件可以理解为UI重用的最小单位，它应该与业务逻辑不相关。&lt;br&gt;可以理解纯组
-      
-    
-    </summary>
-    
-    
-      <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>content-type 与spring boot 控制器的值注入关系</title>
-    <link href="http://truejasonfans.github.io/2019/04/11/content-type%E4%B8%8Espring_controller_model/"/>
-    <id>http://truejasonfans.github.io/2019/04/11/content-type与spring_controller_model/</id>
-    <published>2019-04-10T16:52:57.651Z</published>
-    <updated>2019-04-10T16:52:57.651Z</updated>
-    
-    <content type="html"><![CDATA[<h2 id="content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation"><a href="#content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)"></a>content-type = ‘application/x-www-form-urlencoded’ (不支持@RequestBody annotation)</h2><p>前端传值template string为如下形式<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> http = <span class="keyword">new</span> XMLHttpRequest();</span><br><span class="line"><span class="keyword">var</span> url = <span class="string">'get_data.php'</span>;</span><br><span class="line"><span class="keyword">var</span> params = <span class="string">'orem=ipsum&amp;name=binny'</span>;</span><br><span class="line">http.open(<span class="string">'POST'</span>, url, <span class="literal">true</span>);</span><br><span class="line"></span><br><span class="line"><span class="comment">//Send the proper header information along with the request</span></span><br><span class="line">http.setRequestHeader(<span class="string">'Content-type'</span>, <span class="string">'application/x-www-form-urlencoded'</span>);</span><br><span class="line"></span><br><span class="line">http.onreadystatechange = <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;<span class="comment">//Call a function when the state changes.</span></span><br><span class="line">    <span class="keyword">if</span>(http.readyState == <span class="number">4</span> &amp;&amp; http.status == <span class="number">200</span>) &#123;</span><br><span class="line">        alert(http.responseText);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">http.send(params);</span><br></pre></td></tr></table></figure></p><p>var params = ‘orem=ipsum&amp;name=binny’;</p><h2 id="content-type-‘application-json’-支持-RequestBody-annotation"><a href="#content-type-‘application-json’-支持-RequestBody-annotation" class="headerlink" title="content-type = ‘application/json’ (支持@RequestBody annotation)"></a>content-type = ‘application/json’ (支持@RequestBody annotation)</h2><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> request = <span class="keyword">new</span> XMLHttpRequest()</span><br><span class="line"><span class="keyword">let</span> url = <span class="string">"http://localhost:8080/user/regist"</span>;</span><br><span class="line">request.open(<span class="string">"POST"</span>, url, <span class="literal">true</span>)</span><br><span class="line">request.setRequestHeader(<span class="string">'Content-type'</span>,<span class="string">'application/json; charset=utf-8'</span>);</span><br><span class="line"><span class="keyword">let</span> formData = &#123;<span class="string">'userName='</span> + user.value + <span class="string">'&amp;'</span> + <span class="string">'password='</span> + passwd.value&#125;;</span><br><span class="line">formData.userName =  user.value</span><br><span class="line">formData.password = passwd.value</span><br><span class="line"><span class="built_in">console</span>.log(<span class="built_in">JSON</span>.stringify(formData))</span><br><span class="line">request.send(formData)</span><br></pre></td></tr></table></figure>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;content-type-‘application-x-www-form-urlencoded’-不支持-RequestBody-annotation&quot;&gt;&lt;a href=&quot;#content-type-‘application-x-www-form-urlencod
       
     
     </summary>
@@ -307,29 +307,6 @@
   </entry>
   
   <entry>
-    <title>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</title>
-    <link href="http://truejasonfans.github.io/2017/09/18/Maven%E9%85%8D%E7%BD%AE/"/>
-    <id>http://truejasonfans.github.io/2017/09/18/Maven配置/</id>
-    <published>2017-09-17T16:23:02.000Z</published>
-    <updated>2018-08-09T15:21:59.640Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol><li>下载Maven binary </li><li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li><li><p>修改conf文件下setting.xml,设置为阿里源</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure></li><li><p>打开eclipse-&gt;preference-&gt;Maven</p></li><li>修改Installation，自己所装maven路径</li><li>修改User setting, 制定为设置阿里源的setting.xml</li><li>右键maven工程 -&gt; Maven-&gt; Update Project</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h1 id=&quot;Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）&quot;&gt;&lt;a href=&quot;#Maven在eclipse的配置（解决Plugin
-      
-    
-    </summary>
-    
-    
-      <category term="java" scheme="http://truejasonfans.github.io/tags/java/"/>
-    
-  </entry>
-  
-  <entry>
     <title>redux同步使用学习</title>
     <link href="http://truejasonfans.github.io/2017/09/18/redux_learn/"/>
     <id>http://truejasonfans.github.io/2017/09/18/redux_learn/</id>
@@ -349,6 +326,29 @@
     
     
       <category term="Web前端" scheme="http://truejasonfans.github.io/tags/Web%E5%89%8D%E7%AB%AF/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration\:org.apache.maven.pl）</title>
+    <link href="http://truejasonfans.github.io/2017/09/18/Maven%E9%85%8D%E7%BD%AE/"/>
+    <id>http://truejasonfans.github.io/2017/09/18/Maven配置/</id>
+    <published>2017-09-17T16:23:02.000Z</published>
+    <updated>2018-08-09T15:21:59.640Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）"><a href="#Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）" class="headerlink" title="Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）"></a>Maven在eclipse的配置（解决Plugin execution not covered by lifecycle configuration: org.apache.maven.pl）</h1><ol><li>下载Maven binary </li><li>设置MVN_HOME 环境变量， 添加Bin下路径到Path环境变量</li><li><p>修改conf文件下setting.xml,设置为阿里源</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrors&gt;</span><br><span class="line">&lt;mirror&gt;</span><br><span class="line">      &lt;id&gt;alimaven&lt;/id&gt;</span><br><span class="line">      &lt;name&gt;aliyun maven&lt;/name&gt;</span><br><span class="line">      &lt;url&gt;http://maven.aliyun.com/nexus/content/repositories/central/&lt;/url&gt;</span><br><span class="line">      &lt;mirrorOf&gt;central&lt;/mirrorOf&gt;</span><br><span class="line">    &lt;/mirror&gt;</span><br><span class="line">&lt;/mirrors&gt;</span><br></pre></td></tr></table></figure></li><li><p>打开eclipse-&gt;preference-&gt;Maven</p></li><li>修改Installation，自己所装maven路径</li><li>修改User setting, 制定为设置阿里源的setting.xml</li><li>右键maven工程 -&gt; Maven-&gt; Update Project</li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;Maven在eclipse的配置（解决Plugin-execution-not-covered-by-lifecycle-configuration-org-apache-maven-pl）&quot;&gt;&lt;a href=&quot;#Maven在eclipse的配置（解决Plugin
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://truejasonfans.github.io/tags/java/"/>
     
   </entry>
   
